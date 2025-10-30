@@ -1,66 +1,87 @@
-const apiURL = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47";  // replace
+const binUrl = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47";
+let match = {
+  matchName: "",
+  teamA: "", teamB: "",
+  battingTeam: "", bowlingTeam: "",
+  score: 0, wickets: 0, overs: 0,
+  striker: "-", nonStriker: "-", bowler: "-",
+  strikerRuns: 0, strikerBalls: 0,
+  nonStrikerRuns: 0, nonStrikerBalls: 0,
+  bowlerRuns: 0, bowlerWickets: 0, bowlerOvers: 0,
+  recentBalls: []
+};
 
-let score = 0, wickets = 0, overs = 0.0, batting = "Team A", team1 = "", team2 = "";
-
-async function createMatch() {
-  team1 = document.getElementById('team1').value;
-  team2 = document.getElementById('team2').value;
-  batting = team1;
-  score = 0; wickets = 0; overs = 0.0;
-
-  document.getElementById('matchName').textContent = `${team1} vs ${team2}`;
-  document.getElementById('batting').textContent = `Batting: ${batting}`;
-
-  await updateJSON();
-}
-
-function addRun(runs) {
-  score += runs;
+function createMatch() {
+  match.matchName = document.getElementById("matchName").value;
+  match.teamA = document.getElementById("teamA").value;
+  match.teamB = document.getElementById("teamB").value;
+  match.battingTeam = match.teamA;
+  match.bowlingTeam = match.teamB;
+  document.getElementById("matchTitle").innerText = match.matchName;
+  document.getElementById("scoringPanel").style.display = "block";
   updateDisplay();
-  updateJSON();
-}
-
-function addWicket(type) {
-  wickets++;
-  updateDisplay();
-  updateJSON();
-}
-
-function addExtra(type) {
-  score++;
-  updateDisplay();
-  updateJSON();
-}
-
-function nextOver() {
-  overs = Math.floor(overs) + 1;
-  updateDisplay();
-  updateJSON();
-}
-
-function endInnings() {
-  batting = (batting === team1) ? team2 : team1;
-  score = 0;
-  wickets = 0;
-  overs = 0.0;
-  updateDisplay();
-  updateJSON();
+  updateBin();
 }
 
 function updateDisplay() {
-  document.getElementById('score').textContent = score;
-  document.getElementById('wickets').textContent = wickets;
-  document.getElementById('overs').textContent = overs.toFixed(1);
-  document.getElementById('batting').textContent = `Batting: ${batting}`;
+  document.getElementById("scoreLine").innerText =
+    `${match.battingTeam}: ${match.score}/${match.wickets}`;
+  document.getElementById("overLine").innerText = `Overs: ${match.overs.toFixed(1)}`;
 }
 
-async function updateJSON() {
-  const newData = {
-    match: { team1, team2, batting, score, wickets, overs }
-  };
-  await fetch(apiURL, {
+async function updateBin() {
+  await fetch(binUrl, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newData)
+    body: JSON.stringify(match)
   });
+}
+
+function addRun(runs) {
+  match.score += runs;
+  match.strikerRuns += runs;
+  match.strikerBalls++;
+  ballCount();
+}
+
+function addExtra(type) {
+  if (type === "wide" || type === "noball") match.score++;
+  if (type === "noball") {
+    const extra = prompt("Enter runs made on No Ball (0-6):", "0");
+    match.score += parseInt(extra);
+  }
+  updateDisplay();
+  updateBin();
+}
+
+function addWicket(type) {
+  match.wickets++;
+  match.strikerBalls++;
+  match.recentBalls.push("W");
+  if (match.wickets >= 10) endInnings();
+  ballCount();
+}
+
+function ballCount() {
+  const balls = Math.round((match.overs * 10) % 10);
+  if (balls < 5) match.overs += 0.1;
+  else { match.overs = Math.floor(match.overs) + 1; nextOver(); }
+  match.recentBalls.push(".");
+  updateDisplay();
+  updateBin();
+}
+
+function nextOver() {
+  match.bowlerOvers += 1;
+  match.recentBalls = [];
+  updateDisplay();
+  updateBin();
+}
+
+function endInnings() {
+  [match.battingTeam, match.bowlingTeam] = [match.bowlingTeam, match.battingTeam];
+  match.score = 0; match.wickets = 0; match.overs = 0;
+  match.recentBalls = [];
+  updateDisplay();
+  updateBin();
 }
