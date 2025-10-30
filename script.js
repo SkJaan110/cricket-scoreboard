@@ -1,4 +1,4 @@
-const apiURL = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47"; 
+const apiURL = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47";  // replace
 
 let score = 0, wickets = 0, overs = 0.0, batting = "Team A", team1 = "", team2 = "";
 
