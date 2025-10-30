@@ -1,45 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Overlay</title>
-  <style>
-    body { 
-      background: transparent; 
-      color: white; 
-      font-family: 'Poppins', sans-serif; 
-      text-align: center; 
-    }
-    #box {
-      background: rgba(0,0,0,0.6);
-      border-radius: 10px;
-      padding: 10px;
-      display: inline-block;
-    }
-    span { color: #ffeb3b; font-weight: bold; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Overlay</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div id="box">
-    <h2 id="batting">Batting: -</h2>
-    <p><span id="score">0</span>/<span id="wickets">0</span> | <span id="overs">0.0</span> ov</p>
+<body class="overlay-body">
+  <div class="overlay-bar">
+    <div id="battingLine">TEAM A 0/0 (0.0)</div>
+    <div id="batsmen">On Strike: - | Non Strike: -</div>
+    <div id="bowlingLine">TEAM B Bowling: - | Recent: -</div>
   </div>
 
-  <script>
-    const apiURL = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47";
+<script>
+const binUrl = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47/latest";
 
-    async function fetchScore() {
-      const res = await fetch(apiURL);
-      const data = await res.json();
-      const m = data.record.match;
-      document.getElementById('batting').textContent = `Batting: ${m.batting}`;
-      document.getElementById('score').textContent = m.score;
-      document.getElementById('wickets').textContent = m.wickets;
-      document.getElementById('overs').textContent = m.overs.toFixed(1);
-    }
+async function loadScore() {
+  try {
+    const res = await fetch(binUrl);
+    const data = await res.json();
+    const s = data.record;
 
-    setInterval(fetchScore, 3000);
-    fetchScore();
-  </script>
+    document.getElementById("battingLine").innerText =
+      `${s.battingTeam} ${s.score}/${s.wickets} (${s.overs.toFixed(1)})`;
+    document.getElementById("batsmen").innerText =
+      `On Strike: ${s.striker} ${s.strikerRuns}(${s.strikerBalls}) | Non Strike: ${s.nonStriker} ${s.nonStrikerRuns}(${s.nonStrikerBalls})`;
+    document.getElementById("bowlingLine").innerText =
+      `${s.bowlingTeam} Bowling: ${s.bowler} ${s.bowlerOvers.toFixed(1)}-${s.bowlerRuns}-${s.bowlerWickets} | Recent: ${s.recentBalls.join(" ")}`;
+  } catch (err) { console.error(err); }
+}
+setInterval(loadScore, 3000);
+loadScore();
+</script>
 </body>
 </html>
