@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Overlay</title>
+  <style>
+    body { 
+      background: transparent; 
+      color: white; 
+      font-family: 'Poppins', sans-serif; 
+      text-align: center; 
+    }
+    #box {
+      background: rgba(0,0,0,0.6);
+      border-radius: 10px;
+      padding: 10px;
+      display: inline-block;
+    }
+    span { color: #ffeb3b; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="box">
+    <h2 id="batting">Batting: -</h2>
+    <p><span id="score">0</span>/<span id="wickets">0</span> | <span id="overs">0.0</span> ov</p>
+  </div>
+
+  <script>
+    const apiURL = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47";
+
+    async function fetchScore() {
+      const res = await fetch(apiURL);
+      const data = await res.json();
+      const m = data.record.match;
+      document.getElementById('batting').textContent = `Batting: ${m.batting}`;
+      document.getElementById('score').textContent = m.score;
+      document.getElementById('wickets').textContent = m.wickets;
+      document.getElementById('overs').textContent = m.overs.toFixed(1);
+    }
+
+    setInterval(fetchScore, 3000);
+    fetchScore();
+  </script>
+</body>
+</html>
