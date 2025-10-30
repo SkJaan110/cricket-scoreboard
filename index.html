@@ -1,59 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cricket Scoring</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cricket Scoring Panel</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🏏 Live Cricket Scoring</h1>
+  <div class="container">
+    <h1>🏏 Live Cricket Scoring</h1>
 
-  <section id="setup">
-    <h2>Match Setup</h2>
-    <input type="text" id="team1" placeholder="Team 1 Name">
-    <input type="text" id="team2" placeholder="Team 2 Name">
-    <button onclick="createMatch()">Create Match</button>
-  </section>
-
-  <section id="scoreboard">
-    <h2 id="matchName">No Match Yet</h2>
-    <div id="display">
-      <h3 id="batting">Batting: -</h3>
-      <p>Score: <span id="score">0</span> / <span id="wickets">0</span></p>
-      <p>Overs: <span id="overs">0.0</span></p>
-    </div>
-  </section>
-
-  <section id="controls">
-    <h2>Scoring</h2>
-    <div class="buttons">
-      <button onclick="addRun(1)">1</button>
-      <button onclick="addRun(2)">2</button>
-      <button onclick="addRun(4)">4</button>
-      <button onclick="addRun(6)">6</button>
+    <div class="match-setup">
+      <input id="matchName" placeholder="Match Name">
+      <input id="teamA" placeholder="Team A Name">
+      <input id="teamB" placeholder="Team B Name">
+      <button onclick="createMatch()">Create Match</button>
     </div>
 
-    <div class="buttons">
-      <button onclick="addWicket('Wicket')">Wicket</button>
-      <button onclick="addWicket('LBW')">LBW</button>
-      <button onclick="addWicket('Run Out')">Run Out</button>
-      <button onclick="addWicket('Bowled')">Bowled</button>
-    </div>
+    <div id="scoringPanel" style="display:none;">
+      <h2 id="matchTitle"></h2>
+      <div class="scoreDisplay">
+        <h3 id="scoreLine"></h3>
+        <h4 id="overLine"></h4>
+      </div>
 
-    <div class="buttons">
-      <button onclick="addExtra('Wide')">Wide</button>
-      <button onclick="addExtra('No Ball')">No Ball</button>
-      <button onclick="addExtra('Bye')">Bye</button>
-      <button onclick="addExtra('Leg Bye')">Leg Bye</button>
-    </div>
+      <div class="players">
+        <input id="strike" placeholder="On Strike Batsman">
+        <input id="nonStrike" placeholder="Non Strike Batsman">
+        <input id="bowler" placeholder="Current Bowler">
+      </div>
 
-    <div class="buttons">
-      <button onclick="nextOver()">Next Over</button>
-      <button onclick="endInnings()">End Innings</button>
-    </div>
-  </section>
+      <div class="buttons">
+        <h3>Runs</h3>
+        <button onclick="addRun(0)">0</button>
+        <button onclick="addRun(1)">1</button>
+        <button onclick="addRun(2)">2</button>
+        <button onclick="addRun(3)">3</button>
+        <button onclick="addRun(4)">4</button>
+        <button onclick="addRun(6)">6</button>
 
-  <script src="script.js"></script>
+        <h3>Extras</h3>
+        <button onclick="addExtra('wide')">Wide</button>
+        <button onclick="addExtra('noball')">No Ball</button>
+        <button onclick="addExtra('bye')">Bye</button>
+        <button onclick="addExtra('legbye')">Leg Bye</button>
+
+        <h3>Wickets</h3>
+        <button onclick="addWicket('Bowled')">Bowled</button>
+        <button onclick="addWicket('Run Out')">Run Out</button>
+        <button onclick="addWicket('Caught')">Caught</button>
+        <button onclick="addWicket('LBW')">LBW</button>
+
+        <div class="controls">
+          <button onclick="nextOver()">Next Over</button>
+          <button onclick="endInnings()">End Innings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="script.js"></script>
 </body>
 </html>
