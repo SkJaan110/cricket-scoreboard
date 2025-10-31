@@ -3,93 +3,97 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Cricket Scoring Panel</title>
+<title>Scoring Panel</title>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>🏏 Live Cricket Scoring</h1>
+  <div class="wrap">
+    <h1>Live Cricket Scoring</h1>
 
-    <div class="match-setup">
+    <div class="setup">
       <input id="matchName" placeholder="Match Name" />
       <input id="teamA" placeholder="Team A Name" />
       <input id="teamB" placeholder="Team B Name" />
       <button onclick="createMatch()">Create Match</button>
     </div>
 
-    <div id="scoringPanel" style="display:none;">
-      <h2 id="matchTitle"></h2>
-
-      <div class="scoreDisplay">
-        <div id="leftPlayer" class="player-row">
-          <div class="player-square"></div>
-          <div class="player-name" id="leftName">-</div>
-          <div class="player-stats" id="leftStats">0(0)</div>
+    <div id="panel" class="panel hidden">
+      <div class="toprow">
+        <div class="player left">
+          <input id="strike" placeholder="On-strike batsman" />
+          <div class="pstat" id="strikeStat">0(0)</div>
         </div>
 
-        <div class="center-block">
-          <div id="teamCenter" class="team-name">TEAM</div>
-          <div id="scoreLine" class="score-line">0-0</div>
-          <div id="oversLine" class="overs-line">0.0</div>
+        <div class="center">
+          <div id="teamCenter" class="team">TEAM</div>
+          <div id="scoreCenter" class="score">0-0</div>
+          <div id="oversCenter" class="overs">0.0</div>
         </div>
 
-        <div id="rightPlayer" class="player-row">
-          <div class="player-name" id="rightName">-</div>
-          <div class="player-stats" id="rightStats">0(0)</div>
-          <div class="player-square right"></div>
+        <div class="player right">
+          <input id="nonStrike" placeholder="Non-strike batsman" />
+          <div class="pstat" id="nonStrikeStat">0(0)</div>
         </div>
       </div>
 
       <div class="bowler-row">
-        <input id="bowler" placeholder="Current Bowler" />
+        <input id="bowler" placeholder="Bowler name" />
         <button onclick="setBowler()">Set Bowler</button>
-        <div id="bowlerLine">Bowler: - | Recent: -</div>
+        <div id="bowlerLine">Bowler: - | Recent:-</div>
       </div>
 
-      <div class="controls-grid">
-        <div class="group">
-          <h3>Runs</h3>
-          <button onclick="addRun(0)">0</button>
-          <button onclick="addRun(1)">1</button>
-          <button onclick="addRun(2)">2</button>
-          <button onclick="addRun(3)">3</button>
-          <button onclick="addRun(4)">4</button>
-          <button onclick="addRun(6)">6</button>
+      <div class="controls">
+        <div class="grp">
+          <h4>Runs</h4>
+          <div class="btnrow">
+            <button onclick="addRun(0)">0</button>
+            <button onclick="addRun(1)">1</button>
+            <button onclick="addRun(2)">2</button>
+            <button onclick="addRun(3)">3</button>
+            <button onclick="addRun(4)">4</button>
+            <button onclick="addRun(6)">6</button>
+          </div>
         </div>
 
-        <div class="group">
-          <h3>Extras</h3>
-          <button onclick="addExtra('wide')">Wide</button>
-          <button onclick="addExtra('noball')">No Ball</button>
-          <button onclick="addExtra('bye')">Bye</button>
-          <button onclick="addExtra('legbye')">Leg Bye</button>
+        <div class="grp">
+          <h4>Extras</h4>
+          <div class="btnrow">
+            <button onclick="addExtra('wide')">Wide</button>
+            <button onclick="addExtra('noball')">No Ball</button>
+            <button onclick="addExtra('bye')">Bye</button>
+            <button onclick="addExtra('legbye')">Leg Bye</button>
+          </div>
         </div>
 
-        <div class="group">
-          <h3>Wickets</h3>
-          <button onclick="addWicket('Bowled')">Bowled</button>
-          <button onclick="addWicket('Caught')">Caught</button>
-          <button onclick="addWicket('LBW')">LBW</button>
-          <button onclick="addWicket('Run Out')">Run Out</button>
+        <div class="grp">
+          <h4>Wickets</h4>
+          <div class="btnrow">
+            <button onclick="addWicket('Bowled')">Bowled</button>
+            <button onclick="addWicket('Caught')">Caught</button>
+            <button onclick="addWicket('LBW')">LBW</button>
+            <button onclick="addWicket('Run Out')">Run Out</button>
+          </div>
         </div>
 
-        <div class="group small">
-          <button onclick="rotateStrike()">Rotate Strike</button>
-          <button onclick="nextOver()">Force Next Over</button>
-          <button onclick="endInnings()">End Innings</button>
+        <div class="grp small">
+          <div class="btnrow">
+            <button onclick="rotateStrike()">Rotate Strike</button>
+            <button onclick="nextOver()">Force Next Over</button>
+            <button onclick="endInnings()">End Innings</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- popup modal for new batsman -->
-  <div id="modal" class="modal hidden">
+  <!-- popup for new batsman -->
+  <div id="newModal" class="modal hidden">
     <div class="modal-card">
       <h3 id="modalTitle">New Batsman</h3>
-      <input id="newPlayerName" placeholder="Enter player name" />
+      <input id="newName" placeholder="Enter batsman name" />
       <div class="modal-actions">
         <button onclick="confirmNewBatsman()">Add</button>
-        <button onclick="closeModal()">Cancel</button>
+        <button onclick="cancelNewBatsman()">Cancel</button>
       </div>
     </div>
   </div>
