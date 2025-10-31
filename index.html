@@ -1,103 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Scoring Panel</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cricket Scoring Panel</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="wrap">
-    <h1>Live Cricket Scoring</h1>
 
+  <div class="container">
+    <h1>🏏 Cricket Scoring Panel</h1>
+
+    <!-- Match Setup -->
     <div class="setup">
-      <input id="matchName" placeholder="Match Name" />
-      <input id="teamA" placeholder="Team A Name" />
-      <input id="teamB" placeholder="Team B Name" />
-      <button onclick="createMatch()">Create Match</button>
+      <input type="text" id="teamA" placeholder="Team A Name" />
+      <input type="color" id="teamAColor" value="#ff0040" />
+      <input type="text" id="teamB" placeholder="Team B Name" />
+      <input type="color" id="teamBColor" value="#0011ff" />
+
+      <div class="toss">
+        <label>Toss Winner:</label>
+        <select id="tossWinner">
+          <option value="A">Team A</option>
+          <option value="B">Team B</option>
+        </select>
+        <label>Opt to:</label>
+        <select id="tossDecision">
+          <option value="bat">Bat</option>
+          <option value="bowl">Bowl</option>
+        </select>
+      </div>
+
+      <label>Overs:</label>
+      <input type="number" id="totalOvers" min="1" max="100" value="10" />
+
+      <button id="createMatch">Create Match</button>
     </div>
 
-    <div id="panel" class="panel hidden">
-      <div class="toprow">
-        <div class="player left">
-          <input id="strike" placeholder="On-strike batsman" />
-          <div class="pstat" id="strikeStat">0(0)</div>
-        </div>
+    <hr />
 
-        <div class="center">
-          <div id="teamCenter" class="team">TEAM</div>
-          <div id="scoreCenter" class="score">0-0</div>
-          <div id="oversCenter" class="overs">0.0</div>
-        </div>
-
-        <div class="player right">
-          <input id="nonStrike" placeholder="Non-strike batsman" />
-          <div class="pstat" id="nonStrikeStat">0(0)</div>
-        </div>
+    <!-- Scoring Section -->
+    <div id="scoring" style="display:none;">
+      <h2 id="battingTeam"></h2>
+      <div class="players">
+        <input type="text" id="striker" placeholder="Striker" />
+        <input type="text" id="nonStriker" placeholder="Non-Striker" />
+        <input type="text" id="bowler" placeholder="Bowler" />
       </div>
 
-      <div class="bowler-row">
-        <input id="bowler" placeholder="Bowler name" />
-        <button onclick="setBowler()">Set Bowler</button>
-        <div id="bowlerLine">Bowler: - | Recent:-</div>
+      <div class="buttons">
+        <h3>Runs</h3>
+        <button class="run" data-run="0">0</button>
+        <button class="run" data-run="1">1</button>
+        <button class="run" data-run="2">2</button>
+        <button class="run" data-run="3">3</button>
+        <button class="run" data-run="4">4</button>
+        <button class="run" data-run="6">6</button>
+
+        <h3>Extras</h3>
+        <button class="extra" data-type="wide">Wide</button>
+        <button class="extra" data-type="noball">No Ball</button>
+
+        <h3>Wicket</h3>
+        <button id="wicketBtn">Wicket</button>
       </div>
 
-      <div class="controls">
-        <div class="grp">
-          <h4>Runs</h4>
-          <div class="btnrow">
-            <button onclick="addRun(0)">0</button>
-            <button onclick="addRun(1)">1</button>
-            <button onclick="addRun(2)">2</button>
-            <button onclick="addRun(3)">3</button>
-            <button onclick="addRun(4)">4</button>
-            <button onclick="addRun(6)">6</button>
-          </div>
-        </div>
-
-        <div class="grp">
-          <h4>Extras</h4>
-          <div class="btnrow">
-            <button onclick="addExtra('wide')">Wide</button>
-            <button onclick="addExtra('noball')">No Ball</button>
-            <button onclick="addExtra('bye')">Bye</button>
-            <button onclick="addExtra('legbye')">Leg Bye</button>
-          </div>
-        </div>
-
-        <div class="grp">
-          <h4>Wickets</h4>
-          <div class="btnrow">
-            <button onclick="addWicket('Bowled')">Bowled</button>
-            <button onclick="addWicket('Caught')">Caught</button>
-            <button onclick="addWicket('LBW')">LBW</button>
-            <button onclick="addWicket('Run Out')">Run Out</button>
-          </div>
-        </div>
-
-        <div class="grp small">
-          <div class="btnrow">
-            <button onclick="rotateStrike()">Rotate Strike</button>
-            <button onclick="nextOver()">Force Next Over</button>
-            <button onclick="endInnings()">End Innings</button>
-          </div>
-        </div>
-      </div>
+      <h3>Over Controls</h3>
+      <button id="endOver">End Over</button>
+      <button id="endInnings">End Innings</button>
     </div>
+
+    <p id="status"></p>
   </div>
 
-  <!-- popup for new batsman -->
-  <div id="newModal" class="modal hidden">
-    <div class="modal-card">
-      <h3 id="modalTitle">New Batsman</h3>
-      <input id="newName" placeholder="Enter batsman name" />
-      <div class="modal-actions">
-        <button onclick="confirmNewBatsman()">Add</button>
-        <button onclick="cancelNewBatsman()">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
