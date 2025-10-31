@@ -7,11 +7,13 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="overlay-body">
-  <div class="overlay-bar">
+  <div class="overlay-bar gradient-ticker">
     <div id="battingLine">TEAM A 0/0 (0.0)</div>
     <div id="batsmen">On Strike: - | Non Strike: -</div>
     <div id="bowlingLine">TEAM B Bowling: - | Recent: -</div>
   </div>
+
+  <div id="eventFlash" class="flash hidden">SIX!</div>
 
 <script>
 const binUrl = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47/latest";
@@ -28,9 +30,24 @@ async function loadScore() {
       `On Strike: ${s.striker} ${s.strikerRuns}(${s.strikerBalls}) | Non Strike: ${s.nonStriker} ${s.nonStrikerRuns}(${s.nonStrikerBalls})`;
     document.getElementById("bowlingLine").innerText =
       `${s.bowlingTeam} Bowling: ${s.bowler} ${s.bowlerOvers.toFixed(1)}-${s.bowlerRuns}-${s.bowlerWickets} | Recent: ${s.recentBalls.join(" ")}`;
+
+    // Flash Animation
+    const flash = document.getElementById("eventFlash");
+    const last = s.recentBalls[s.recentBalls.length - 1];
+    if (last === 4) showFlash("FOUR!");
+    if (last === 6) showFlash("SIX!");
+    if (last === "W") showFlash("WICKET!");
   } catch (err) { console.error(err); }
 }
-setInterval(loadScore, 3000);
+
+function showFlash(text) {
+  const flash = document.getElementById("eventFlash");
+  flash.innerText = text;
+  flash.classList.remove("hidden");
+  setTimeout(() => flash.classList.add("hidden"), 1500);
+}
+
+setInterval(loadScore, 2000);
 loadScore();
 </script>
 </body>
