@@ -19,7 +19,20 @@ function createMatch() {
   match.bowlingTeam = match.teamB;
   document.getElementById("matchTitle").innerText = match.matchName;
   document.getElementById("scoringPanel").style.display = "block";
-  updateDisplay();
+  updateDisplay(); updateBin();
+}
+
+function updatePlayers() {
+  match.striker = document.getElementById("strike").value;
+  match.nonStriker = document.getElementById("nonStrike").value;
+  match.bowler = document.getElementById("bowler").value;
+  updateBin();
+}
+
+function rotateStrike() {
+  const temp = match.striker;
+  match.striker = match.nonStriker;
+  match.nonStriker = temp;
   updateBin();
 }
 
@@ -41,17 +54,19 @@ function addRun(runs) {
   match.score += runs;
   match.strikerRuns += runs;
   match.strikerBalls++;
+  match.recentBalls.push(runs);
+  if (runs % 2 === 1) rotateStrike();
   ballCount();
 }
 
 function addExtra(type) {
   if (type === "wide" || type === "noball") match.score++;
   if (type === "noball") {
-    const extra = prompt("Enter runs made on No Ball (0-6):", "0");
+    const extra = prompt("Runs scored on No Ball (0-6):", "0");
     match.score += parseInt(extra);
-  }
-  updateDisplay();
-  updateBin();
+    match.recentBalls.push("NB+" + extra);
+  } else match.recentBalls.push(type.toUpperCase());
+  updateDisplay(); updateBin();
 }
 
 function addWicket(type) {
@@ -66,22 +81,19 @@ function ballCount() {
   const balls = Math.round((match.overs * 10) % 10);
   if (balls < 5) match.overs += 0.1;
   else { match.overs = Math.floor(match.overs) + 1; nextOver(); }
-  match.recentBalls.push(".");
-  updateDisplay();
-  updateBin();
+  updateDisplay(); updateBin();
 }
 
 function nextOver() {
   match.bowlerOvers += 1;
   match.recentBalls = [];
-  updateDisplay();
-  updateBin();
+  rotateStrike();
+  updateDisplay(); updateBin();
 }
 
 function endInnings() {
   [match.battingTeam, match.bowlingTeam] = [match.bowlingTeam, match.battingTeam];
   match.score = 0; match.wickets = 0; match.overs = 0;
   match.recentBalls = [];
-  updateDisplay();
-  updateBin();
+  updateDisplay(); updateBin();
 }
