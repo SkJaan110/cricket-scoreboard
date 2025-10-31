@@ -1,54 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Overlay</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Stream Overlay</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body class="overlay-body">
-  <div class="overlay-bar gradient-ticker">
-    <div id="battingLine">TEAM A 0/0 (0.0)</div>
-    <div id="batsmen">On Strike: - | Non Strike: -</div>
-    <div id="bowlingLine">TEAM B Bowling: - | Recent: -</div>
+  <!-- bottom bar shaped like your image -->
+  <div class="overlay-bar" id="overlayBar">
+    <div class="player-left">
+      <div class="square"></div>
+      <div class="pname" id="ov_leftName">PLAYER NAME</div>
+      <div class="pstats" id="ov_leftStats">0(0)</div>
+    </div>
+
+    <div class="center-area">
+      <div class="team" id="ov_team">TEAM</div>
+      <div class="scorebig" id="ov_score">0-0</div>
+      <div class="overs" id="ov_overs">0.0</div>
+    </div>
+
+    <div class="player-right">
+      <div class="pname" id="ov_rightName">PLAYER NAME</div>
+      <div class="pstats" id="ov_rightStats">0(0)</div>
+      <div class="square right"></div>
+    </div>
+
+    <div class="bowler-area">
+      <div class="bowler-name" id="ov_bowler">Bowler: -</div>
+      <div class="recent" id="ov_recent">RECENT:-</div>
+    </div>
   </div>
 
-  <div id="eventFlash" class="flash hidden">SIX!</div>
+  <div id="flash" class="flash hidden"></div>
 
 <script>
-const binUrl = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47/latest";
-
-async function loadScore() {
-  try {
-    const res = await fetch(binUrl);
-    const data = await res.json();
-    const s = data.record;
-
-    document.getElementById("battingLine").innerText =
-      `${s.battingTeam} ${s.score}/${s.wickets} (${s.overs.toFixed(1)})`;
-    document.getElementById("batsmen").innerText =
-      `On Strike: ${s.striker} ${s.strikerRuns}(${s.strikerBalls}) | Non Strike: ${s.nonStriker} ${s.nonStrikerRuns}(${s.nonStrikerBalls})`;
-    document.getElementById("bowlingLine").innerText =
-      `${s.bowlingTeam} Bowling: ${s.bowler} ${s.bowlerOvers.toFixed(1)}-${s.bowlerRuns}-${s.bowlerWickets} | Recent: ${s.recentBalls.join(" ")}`;
-
-    // Flash Animation
-    const flash = document.getElementById("eventFlash");
-    const last = s.recentBalls[s.recentBalls.length - 1];
-    if (last === 4) showFlash("FOUR!");
-    if (last === 6) showFlash("SIX!");
-    if (last === "W") showFlash("WICKET!");
-  } catch (err) { console.error(err); }
-}
+const binLatest = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47/latest?_=";
 
 function showFlash(text) {
-  const flash = document.getElementById("eventFlash");
-  flash.innerText = text;
-  flash.classList.remove("hidden");
-  setTimeout(() => flash.classList.add("hidden"), 1500);
+  const f = document.getElementById('flash');
+  f.innerText = text;
+  f.classList.remove('hidden');
+  // auto hide after 3.5s
+  setTimeout(()=> f.classList.add('hidden'), 3500);
 }
 
-setInterval(loadScore, 2000);
-loadScore();
+async function refreshOverlay() {
+  try {
+    const res = await fetch(binLatest + Date.now());
+    const j = await res.json();
+    const s = j.record;
+
+    // update names and stats (only names & stats)
+    document.getElementById('ov_leftName').innerText = s.striker || '-';
+    document.getElementById('ov_leftStats').innerText = `${s.strikerRuns||0}(${s.strikerBalls||0})`;
+    document.getElementById('ov_rightName').innerText = s.nonStriker || '-';
+    document.getElementById('ov_rightStats').innerText = `${s.nonStrikerRuns||0}(${s.nonStrikerBalls||0})`;
+
+    document.getElementById('ov_team').innerText = s.battingTeam || 'TEAM';
+    document.getElementById('ov_score').innerText = `${s.score||0}-${s.wickets||0}`;
+    document.getElementById('ov_overs').innerText = (s.overs||'0.0');
+
+    // bowler recent: show only recentBalls array (last 6)
+    const recent = (s.recentBalls || []).slice(-6).map(x=>{
+      if (typeof x === 'number') return x;
+      return x; // strings like 'W' or 'NB+1' or 'wide'
+    }).join(' ');
+    document.getElementById('ov_recent').innerText = 'RECENT:- ' + (recent || '-');
+
+    // last ball animation: check last element
+    const last = (s.recentBalls || []).slice(-1)[0];
+    if (last === 4) showFlash('FOUR');
+    if (last === 6) showFlash('SIX');
+    if (last === 'W') showFlash('WICKET');
+
+  } catch (e) { console.error(e); }
+}
+
+setInterval(refreshOverlay, 1800);
+refreshOverlay();
 </script>
 </body>
 </html>
