@@ -3,83 +3,81 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Stream Overlay</title>
+<title>Overlay</title>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body class="overlay-body">
-  <!-- bottom bar shaped like your image -->
-  <div class="overlay-bar" id="overlayBar">
-    <div class="player-left">
+  <!-- bottom flat bars matching your image -->
+  <div class="overlay-bar">
+    <div class="left-block">
       <div class="square"></div>
-      <div class="pname" id="ov_leftName">PLAYER NAME</div>
-      <div class="pstats" id="ov_leftStats">0(0)</div>
+      <div class="ov-name" id="ov_leftName">PLAYER NAME</div>
+      <div class="ov-stats" id="ov_leftStats">0(0)</div>
     </div>
 
-    <div class="center-area">
-      <div class="team" id="ov_team">TEAM</div>
-      <div class="scorebig" id="ov_score">0-0</div>
-      <div class="overs" id="ov_overs">0.0</div>
+    <div class="center-block-ov">
+      <div class="ov-team" id="ov_team">TEAM</div>
+      <div class="ov-score" id="ov_score">0-0</div>
+      <div class="ov-overs" id="ov_overs">0.0</div>
     </div>
 
-    <div class="player-right">
-      <div class="pname" id="ov_rightName">PLAYER NAME</div>
-      <div class="pstats" id="ov_rightStats">0(0)</div>
+    <div class="right-block">
+      <div class="ov-name" id="ov_rightName">PLAYER NAME</div>
+      <div class="ov-stats" id="ov_rightStats">0(0)</div>
       <div class="square right"></div>
     </div>
 
-    <div class="bowler-area">
-      <div class="bowler-name" id="ov_bowler">Bowler: -</div>
-      <div class="recent" id="ov_recent">RECENT:-</div>
+    <div class="bottom-row">
+      <div class="bowler" id="ov_bowler">BOWLER: -</div>
+      <div class="recent" id="ov_recent">RESENT:- - - - - -</div>
     </div>
   </div>
 
-  <div id="flash" class="flash hidden"></div>
+  <div id="flash" class="flash hidden">SIX</div>
 
 <script>
-const binLatest = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47/latest?_=";
+const BIN_BASE = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47/latest";
 
-function showFlash(text) {
-  const f = document.getElementById('flash');
-  f.innerText = text;
-  f.classList.remove('hidden');
-  // auto hide after 3.5s
-  setTimeout(()=> f.classList.add('hidden'), 3500);
+function showFlash(text){
+  const el = document.getElementById('flash');
+  el.innerText = text;
+  el.classList.remove('hidden');
+  setTimeout(()=> el.classList.add('hidden'), 3500); // auto off 3.5s
 }
 
-async function refreshOverlay() {
-  try {
-    const res = await fetch(binLatest + Date.now());
+async function updateOverlay(){
+  try{
+    const res = await fetch(BIN_BASE + '?_=' + Date.now());
     const j = await res.json();
     const s = j.record;
 
-    // update names and stats (only names & stats)
-    document.getElementById('ov_leftName').innerText = s.striker || '-';
-    document.getElementById('ov_leftStats').innerText = `${s.strikerRuns||0}(${s.strikerBalls||0})`;
-    document.getElementById('ov_rightName').innerText = s.nonStriker || '-';
-    document.getElementById('ov_rightStats').innerText = `${s.nonStrikerRuns||0}(${s.nonStrikerBalls||0})`;
+    document.getElementById('ov_leftName').innerText = s.striker?.name || '-';
+    document.getElementById('ov_leftStats').innerText = `${s.striker?.runs||0}(${s.striker?.balls||0})`;
+    document.getElementById('ov_rightName').innerText = s.nonStriker?.name || '-';
+    document.getElementById('ov_rightStats').innerText = `${s.nonStriker?.runs||0}(${s.nonStriker?.balls||0})`;
 
     document.getElementById('ov_team').innerText = s.battingTeam || 'TEAM';
     document.getElementById('ov_score').innerText = `${s.score||0}-${s.wickets||0}`;
-    document.getElementById('ov_overs').innerText = (s.overs||'0.0');
+    document.getElementById('ov_overs').innerText = s.overs || '0.0';
 
-    // bowler recent: show only recentBalls array (last 6)
-    const recent = (s.recentBalls || []).slice(-6).map(x=>{
-      if (typeof x === 'number') return x;
-      return x; // strings like 'W' or 'NB+1' or 'wide'
+    // recent: show last 6 of current over; it resets on over end by server logic
+    const rec = (s.recentBalls || []).slice(-6).map(x=>{
+      if(typeof x === 'number') return x;
+      return x.toString();
     }).join(' ');
-    document.getElementById('ov_recent').innerText = 'RECENT:- ' + (recent || '-');
+    document.getElementById('ov_recent').innerText = 'RESENT:- ' + (rec || '- - - - - -');
 
-    // last ball animation: check last element
+    // flash events: last item
     const last = (s.recentBalls || []).slice(-1)[0];
-    if (last === 4) showFlash('FOUR');
-    if (last === 6) showFlash('SIX');
-    if (last === 'W') showFlash('WICKET');
+    if(last === 4) showFlash('FOUR');
+    else if(last === 6) showFlash('SIX');
+    else if(last === 'W') showFlash('WICKET');
 
-  } catch (e) { console.error(e); }
+  } catch(err){ console.error(err); }
 }
 
-setInterval(refreshOverlay, 1800);
-refreshOverlay();
+setInterval(updateOverlay, 1800);
+updateOverlay();
 </script>
 </body>
 </html>
