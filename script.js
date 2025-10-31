@@ -1,18 +1,17 @@
-// main script for scoring panel
-const binUrl = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47";
+/* scoring logic — updates JSONBin (public bin) */
+const BIN_PUT = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47";
 
 let state = {
   matchName: "",
   teamA: "", teamB: "",
   battingTeam: "", bowlingTeam: "",
   score: 0, wickets: 0,
-  balls: 0, // raw balls count (legal deliveries)
+  balls: 0, // legal balls in current innings
   overs: "0.0",
-  striker: "", nonStriker: "", bowler: "",
-  strikerRuns: 0, strikerBalls: 0,
-  nonStrikerRuns: 0, nonStrikerBalls: 0,
-  bowlerRuns: 0, bowlerWickets: 0, bowlerBalls: 0,
-  recentBalls: []
+  striker: { name: "", runs: 0, balls: 0 },
+  nonStriker: { name: "", runs: 0, balls: 0 },
+  bowler: { name: "", overs: 0, runs: 0, wickets: 0 },
+  recentBalls: [] // resets at over end
 };
 
 function createMatch(){
@@ -21,253 +20,256 @@ function createMatch(){
   state.teamB = document.getElementById('teamB').value || 'Team B';
   state.battingTeam = state.teamA;
   state.bowlingTeam = state.teamB;
-  document.getElementById('matchTitle').innerText = state.matchName;
-  document.getElementById('scoringPanel').style.display = 'block';
-  pushState();
-  renderPanel();
+  document.getElementById('panel').classList.remove('hidden');
+  pushState(); renderPanel();
+  transient('Match created');
 }
 
 function setBowler(){
-  const b = document.getElementById('bowler').value.trim();
-  if(!b) return alert('Enter bowler name');
-  state.bowler = b;
-  // reset current bowler over-stat if new
-  state.bowlerRuns = 0; state.bowlerWickets = 0; state.bowlerBalls = 0;
+  const v = document.getElementById('bowler').value.trim();
+  if(!v){ return alert('Enter bowler name'); }
+  state.bowler.name = v;
+  state.bowler.overs = state.bowler.overs || 0;
+  state.bowler.runs = state.bowler.runs || 0;
+  state.bowler.wickets = state.bowler.wickets || 0;
   pushState(); renderPanel();
-  showPopup(`${b} set as bowler`);
+  transient('Bowler set');
 }
 
-function updatePlayers(){
-  const s = document.getElementById('strike').value.trim();
-  const ns = document.getElementById('nonStrike').value.trim();
-  if(s) { state.striker = s; state.strikerRuns = state.strikerRuns || 0; state.strikerBalls = state.strikerBalls || 0; }
-  if(ns) { state.nonStriker = ns; state.nonStrikerRuns = state.nonStrikerRuns || 0; state.nonStrikerBalls = state.nonStrikerBalls || 0; }
-  pushState(); renderPanel();
-  showPopup('Players updated');
+function renderPanel(){
+  document.getElementById('strike').value = state.striker.name || '';
+  document.getElementById('nonStrike').value = state.nonStriker.name || '';
+  document.getElementById('strikeStat').innerText = `${state.striker.runs}(${state.striker.balls})`;
+  document.getElementById('nonStrikeStat').innerText = `${state.nonStriker.runs}(${state.nonStriker.balls})`;
+  document.getElementById('teamCenter').innerText = state.battingTeam;
+  document.getElementById('scoreCenter').innerText = `${state.score}-${state.wickets}`;
+  document.getElementById('oversCenter').innerText = state.overs;
+  document.getElementById('bowlerLine').innerText = `Bowler: ${state.bowler.name} | Recent: ${(state.recentBalls.slice(-6).join(' ')||'-')}`;
 }
 
-function rotateStrike(){
-  const a = state.striker; state.striker = state.nonStriker; state.nonStriker = a;
-  const ar = state.strikerRuns, ab = state.strikerBalls;
-  state.strikerRuns = state.nonStrikerRuns; state.strikerBalls = state.nonStrikerBalls;
-  state.nonStrikerRuns = ar; state.nonStrikerBalls = ab;
-  pushState(); renderPanel();
+function pushState(){
+  // prepare public-record body; JSONBin accepts PUT with raw object
+  fetch(BIN_PUT, {
+    method: 'PUT',
+    headers: { "Content-Type":"application/json" },
+    body: JSON.stringify({
+      battingTeam: state.battingTeam,
+      bowlingTeam: state.bowlingTeam,
+      score: state.score,
+      wickets: state.wickets,
+      overs: state.overs,
+      striker: state.striker,
+      nonStriker: state.nonStriker,
+      bowler: state.bowler,
+      recentBalls: state.recentBalls
+    })
+  }).catch(e=>console.error('push err',e));
 }
 
+/* helpers */
+function calcOversFromBalls(){
+  const full = Math.floor(state.balls/6);
+  const rem = state.balls % 6;
+  state.overs = `${full}.${rem}`;
+}
+
+/* add runs (legal delivery) */
 function addRun(r){
-  // legal delivery
   state.score += r;
+  state.striker.runs += r;
+  state.striker.balls += 1;
+  state.bowler.runs += r;
+  state.bowler.balls = (state.bowler.balls||0) + 1;
+
   state.balls += 1;
-  state.strikerRuns += r;
-  state.strikerBalls += 1;
-  state.bowlerRuns += r;
-  state.bowlerBalls += 1;
   state.recentBalls.push(r);
-  if(r % 2 === 1) swapBatsmenAfterRun();
-  handleOverProgress();
-  pushState(); renderPanel();
+  if(state.recentBalls.length>6) state.recentBalls.shift();
+
+  if(r % 2 === 1) swapBatsmen();
+  handleOverEnd();
+  renderPanel(); pushState();
 }
 
+/* extras */
 function addExtra(type){
   if(type === 'wide'){
     state.score += 1;
     state.recentBalls.push('WD');
-    // wide does NOT count as legal ball
+    if(state.recentBalls.length>6) state.recentBalls.shift();
+    // wide NOT count as legal ball
   } else if(type === 'noball'){
-    // no ball gives +1 and then ask for runs on free hit
-    const runs = parseInt(prompt('Runs scored on no ball (0-6):', '0')||'0');
-    state.score += 1 + (isNaN(runs)?0:runs);
-    state.recentBalls.push('NB+' + (isNaN(runs)?0:runs));
-    // no legal ball increment (unless boundary on free hit logic needed)
-    // credit runs to striker (commonly)
-    state.strikerRuns += (isNaN(runs)?0:runs);
-    if(!isNaN(runs) && runs % 2 === 1) swapBatsmenAfterRun();
+    let runs = parseInt(prompt('Runs scored on no-ball (0-6):','0')||'0');
+    runs = isNaN(runs)?0:runs;
+    state.score += 1 + runs;
+    state.recentBalls.push('NB+'+runs);
+    // credit to striker commonly
+    state.striker.runs += runs;
+    if(state.recentBalls.length>6) state.recentBalls.shift();
+    if(runs % 2 === 1) swapBatsmen();
+    // no legal ball increment
   } else if(type === 'bye' || type === 'legbye'){
-    const runs = parseInt(prompt('Bye runs (0-6):','0')||'0');
-    state.score += (isNaN(runs)?0:runs);
-    state.recentBalls.push(type === 'bye' ? 'B' + runs : 'LB' + runs);
+    let runs = parseInt(prompt('Bye runs (0-6):','0')||'0');
+    runs = isNaN(runs)?0:runs;
+    state.score += runs;
+    state.recentBalls.push((type==='bye'?'B':'LB')+runs);
+    // byes count as legal delivery
     state.balls += 1;
-    state.bowlerRuns += (isNaN(runs)?0:runs);
-    state.bowlerBalls += 1;
-    if(!isNaN(runs) && runs % 2 === 1) swapBatsmenAfterRun();
-    handleOverProgress();
+    state.bowler.runs += runs;
+    state.bowler.balls = (state.bowler.balls||0) + 1;
+    if(state.recentBalls.length>6) state.recentBalls.shift();
+    if(runs % 2 === 1) swapBatsmen();
+    handleOverEnd();
   }
-  pushState(); renderPanel();
+  renderPanel(); pushState();
 }
 
+/* wicket */
 function addWicket(kind){
   if(kind === 'Run Out'){
-    // ask if legal (counts ball) or no-ball (doesn't)
-    const legal = confirm('Count this run-out as a legal delivery? OK = legal (ball counted). Cancel = no-ball (ball not counted).');
+    const legal = confirm('Count this run-out as legal delivery? OK=legal (counts ball). Cancel = no-ball (no legal ball).');
     if(!legal){
-      state.recentBalls.push('RO(NB)');
-      // run out on no-ball: usually not wicket, but per your rule allow wicket but no ball counted
-      // we'll count wicket but not ball
+      // no-ball run out: count wicket but not increase ball
       state.wickets += 1;
-      state.bowlerWickets += 1;
-      swapForNewBatsman();
-      pushState(); renderPanel();
+      state.bowler.wickets = (state.bowler.wickets||0) + 1;
+      state.recentBalls.push('RO(NB)');
+      if(state.recentBalls.length>6) state.recentBalls.shift();
+      openNewBatsmanModal();
+      renderPanel(); pushState();
       return;
     }
-    // else legal
+    // else fall through as legal wicket
   }
+
   // legal wicket
   state.wickets += 1;
+  state.bowler.wickets = (state.bowler.wickets||0) + 1;
+  state.striker.balls += 1;
+  state.bowler.balls = (state.bowler.balls||0) + 1;
   state.balls += 1;
-  state.bowlerWickets += 1;
-  state.strikerBalls += 1;
   state.recentBalls.push('W');
-  handleOverProgress();
-  // show modal to add next batsman or all out
+  if(state.recentBalls.length>6) state.recentBalls.shift();
+  handleOverEnd();
   openNewBatsmanModal();
-  pushState(); renderPanel();
+  renderPanel(); pushState();
 }
 
-function swapBatsmenAfterRun(){
-  // swap striker/non-striker scores & names
-  const sa = {name: state.striker, r: state.strikerRuns, b: state.strikerBalls};
-  const nb = {name: state.nonStriker, r: state.nonStrikerRuns, b: state.nonStrikerBalls};
-  // after swap: striker becomes nonStriker etc.
-  state.striker = nb.name; state.strikerRuns = nb.r; state.strikerBalls = nb.b;
-  state.nonStriker = sa.name; state.nonStrikerRuns = sa.r; state.nonStrikerBalls = sa.b;
+/* swap batsmen on odd runs or rotate */
+function swapBatsmen(){
+  const aName = state.striker.name, aRuns = state.striker.runs, aBalls = state.striker.balls;
+  const bName = state.nonStriker.name, bRuns = state.nonStriker.runs, bBalls = state.nonStriker.balls;
+  state.striker = { name: bName, runs: bRuns, balls: bBalls };
+  state.nonStriker = { name: aName, runs: aRuns, balls: aBalls };
 }
 
-function handleOverProgress(){
-  // balls is count of legal deliveries
-  const full = Math.floor(state.balls / 6);
-  const rem = state.balls % 6;
-  state.overs = parseFloat(full + '.' + rem);
-  if(rem === 0 && state.balls !== 0){
-    // over finished
-    // increment bowler overs
-    state.bowlerBalls = 0;
-    state.bowlerOvers = (state.bowlerOvers || 0) + 1;
-    // clear recentBalls after saving last over
-    // keep recent balls of last over in array but trimmed to last 6
-    state.recentBalls = (state.recentBalls || []).slice(-6);
-    // popup to change bowler
-    openNewBowlerModal();
+/* rotate strike by button */
+function rotateStrike(){
+  swapBatsmen();
+  renderPanel(); pushState();
+}
+
+/* handle over end: when balls %6 ===0 => increment bowler overs, reset recentBalls */
+function handleOverEnd(){
+  if(state.balls % 6 === 0){
+    // complete over
+    state.bowler.overs = (state.bowler.overs||0) + 1;
+    // reset recentBalls for new over
+    state.recentBalls = [];
+    // no automatic clear of striker etc; rotate strike at over end
+    swapBatsmen();
+    // update overs string
+    calcOversFromBalls();
+    renderPanel(); pushState();
+    // prompt to change bowler (non-blocking)
+    setTimeout(()=> {
+      if(confirm('Change bowler now?')) {
+        const nb = prompt('Enter bowler name:','');
+        if(nb) { state.bowler = { name: nb, overs: 0, runs: 0, wickets: 0 }; pushState(); renderPanel(); }
+      }
+    },200);
+  } else {
+    calcOversFromBalls();
   }
 }
 
+/* calc overs */
+function calcOversFromBalls(){
+  const full = Math.floor(state.balls/6);
+  const rem = state.balls % 6;
+  state.overs = `${full}.${rem}`;
+}
+
+/* modal flow */
+function openNewBatsmanModal(){
+  document.getElementById('newModal').classList.remove('hidden');
+  document.getElementById('newName').value = '';
+  document.getElementById('modalTitle').innerText = 'New Batsman (or Cancel = All Out)';
+}
+function confirmNewBatsman(){
+  const n = document.getElementById('newName').value.trim();
+  if(!n){
+    // treat empty as all out
+    endInnings();
+    closeNewModal();
+    return;
+  }
+  // replace striker with new batsman (reset only his runs)
+  state.striker = { name: n, runs: 0, balls: 0 };
+  closeNewModal();
+  renderPanel(); pushState();
+}
+function cancelNewBatsman(){
+  // cancel = All out (as requested earlier)
+  endInnings();
+  closeNewModal();
+}
+function closeNewModal(){ document.getElementById('newModal').classList.add('hidden'); }
+
+/* nextOver forced by button */
 function nextOver(){
-  // force end over: convert current partial to complete and rotate strike
   const rem = state.balls % 6;
   if(rem !== 0){
     state.balls += (6 - rem);
   }
-  handleOverProgress();
-  rotateStrike();
-  pushState(); renderPanel();
+  handleOverEnd();
+  calcOversFromBalls();
+  renderPanel(); pushState();
 }
 
+/* end innings -> swap teams and reset per-player but keep totals as per your rule (we reset totals here per innings) */
 function endInnings(){
-  // swap teams
+  // swap batting/bowling teams and reset inning stats
   const prevBat = state.battingTeam;
-  state.battingTeam = state.bowlingTeam;
+  state.battingTeam = state.bowlingTeam || state.teamB;
   state.bowlingTeam = prevBat;
   state.score = 0; state.wickets = 0; state.balls = 0; state.overs = "0.0";
-  state.striker = ""; state.nonStriker = ""; state.bowler = "";
-  state.strikerRuns = state.strikerBalls = 0;
-  state.nonStrikerRuns = state.nonStrikerBalls = 0;
-  state.bowlerRuns = state.bowlerWickets = state.bowlerOvers = 0;
+  state.striker = { name: "", runs: 0, balls: 0 };
+  state.nonStriker = { name: "", runs: 0, balls: 0 };
+  state.bowler = { name: "", overs: 0, runs: 0, wickets:0 };
   state.recentBalls = [];
-  pushState(); renderPanel();
+  renderPanel(); pushState();
 }
 
-function openNewBatsmanModal(){
-  document.getElementById('modalTitle').innerText = 'New Batsman (or All Out)';
-  document.getElementById('newPlayerName').value = '';
-  document.getElementById('modal').classList.remove('hidden');
-}
+/* set striker / non-striker from inputs when user updates names in panel (optional) */
+document.getElementById && document.addEventListener('DOMContentLoaded', ()=> {
+  const sInput = document.getElementById('strike');
+  const nsInput = document.getElementById('nonStrike');
+  sInput && sInput.addEventListener('change', ()=> { state.striker.name = sInput.value.trim(); pushState(); });
+  nsInput && nsInput.addEventListener('change', ()=> { state.nonStriker.name = nsInput.value.trim(); pushState(); });
+});
 
-function confirmNewBatsman(){
-  const name = document.getElementById('newPlayerName').value.trim();
-  if(!name){
-    // If empty, treat as All out
-    allOutProcedure();
-    closeModal();
-    return;
-  }
-  // replace striker with new player and reset his stats
-  state.striker = name;
-  state.strikerRuns = 0; state.strikerBalls = 0;
-  closeModal(); pushState(); renderPanel();
-  showPopup(`${name} in`);
-}
-
-function allOutProcedure(){
-  // start next innings
-  endInnings();
-  showPopup('All Out → Next Innings');
-}
-
-function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
-
-function openNewBowlerModal(){
-  if(confirm('Change bowler now?')) {
-    const b = prompt('Enter new bowler name:','');
-    if(b){ state.bowler = b; state.bowlerRuns = 0; state.bowlerWickets = 0; state.bowlerOvers = 0; pushState(); renderPanel(); showPopup('Bowler: '+b); }
-  }
-}
-
-function swapForNewBatsman(){
-  // when run out in legal ball: replace striker with new batsman
-  openNewBatsmanModal();
-}
-
-function renderPanel(){
-  // update UI of scorer
-  document.getElementById('leftName').innerText = state.striker || '-';
-  document.getElementById('leftStats').innerText = `${state.strikerRuns||0}(${state.strikerBalls||0})`;
-  document.getElementById('rightName').innerText = state.nonStriker || '-';
-  document.getElementById('rightStats').innerText = `${state.nonStrikerRuns||0}(${state.nonStrikerBalls||0})`;
-  document.getElementById('teamCenter').innerText = state.battingTeam || 'TEAM';
-  document.getElementById('scoreLine').innerText = `${state.score||0}-${state.wickets||0}`;
-  document.getElementById('oversLine').innerText = (typeof state.overs === 'number' ? state.overs.toFixed(1) : state.overs);
-  document.getElementById('bowlerLine').innerText = `Bowler: ${state.bowler||'-'} | Recent: ${ (state.recentBalls||[]).slice(-6).join(' ') || '-' }`;
-}
-
-async function pushState(){
-  try {
-    await fetch(binUrl, {
-      method: 'PUT',
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({
-        battingTeam: state.battingTeam,
-        bowlingTeam: state.bowlingTeam,
-        score: state.score,
-        wickets: state.wickets,
-        overs: (typeof state.overs === 'number' ? parseFloat(state.overs.toFixed(1)) : state.overs),
-        striker: state.striker,
-        strikerRuns: state.strikerRuns,
-        strikerBalls: state.strikerBalls,
-        nonStriker: state.nonStriker,
-        nonStrikerRuns: state.nonStrikerRuns,
-        nonStrikerBalls: state.nonStrikerBalls,
-        bowler: state.bowler,
-        bowlerRuns: state.bowlerRuns,
-        bowlerWickets: state.bowlerWickets,
-        bowlerOvers: state.bowlerOvers || 0,
-        recentBalls: state.recentBalls.slice(-12)
-      })
-    });
-  } catch(e){ console.error('push error', e); }
-}
-
-function showPopup(text){
-  // simple transient popup for scorer
+/* transient message */
+function transient(msg){
   const el = document.createElement('div');
-  el.className = 'transient';
-  el.innerText = text;
+  el.className = 'transient'; el.innerText = msg;
   document.body.appendChild(el);
   setTimeout(()=> el.classList.add('fade'), 10);
-  setTimeout(()=> el.remove(), 2500);
+  setTimeout(()=> el.remove(), 2200);
 }
 
-// keyboard shortcuts (optional)
+/* keyboard shortcuts */
 window.addEventListener('keydown',(e)=>{
-  if(e.key === '1') addRun(1);
-  if(e.key === '4') addRun(4);
-  if(e.key === '6') addRun(6);
+  if(e.key==='1') addRun(1);
+  if(e.key==='4') addRun(4);
+  if(e.key==='6') addRun(6);
 });
+
