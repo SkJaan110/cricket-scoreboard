@@ -13,23 +13,51 @@ button {
   cursor: pointer; transition: 0.2s;
 }
 button:hover { transform: scale(1.05); }
+
 .overlay-body {
   background: transparent;
   overflow: hidden;
 }
 .overlay-bar {
   position: absolute;
-  bottom: 10px;
-  width: 100%;
-  background: rgba(20, 20, 20, 0.7);
-  box-shadow: 0 0 20px #ff0057;
+  bottom: 20px;
+  width: 96%;
+  left: 2%;
+  background: rgba(25, 25, 25, 0.8);
   border-radius: 20px;
-  padding: 10px;
+  padding: 12px;
   text-align: center;
   color: #fff;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.2);
-  transform: perspective(600px) rotateX(15deg);
+  border: 2px solid rgba(255,255,255,0.2);
+  box-shadow: 0 0 25px rgba(255,0,90,0.8);
+  transform: perspective(600px) rotateX(12deg);
+}
+.gradient-ticker {
+  background: linear-gradient(90deg, #ff0057, #ffcc00, #00ffea, #0057ff);
+  background-size: 400% 400%;
+  animation: gradientMove 6s infinite alternate;
+}
+@keyframes gradientMove {
+  0% {background-position: 0% 50%;}
+  100% {background-position: 100% 50%;}
+}
+.flash {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  text-align: center;
+  font-size: 80px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 30px yellow;
+  animation: flashPop 1s ease-in-out;
+}
+.hidden { display: none; }
+@keyframes flashPop {
+  0% {transform: scale(0.5); opacity:0;}
+  50% {transform: scale(1.2); opacity:1;}
+  100% {transform: scale(1); opacity:0;}
 }
