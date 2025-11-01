@@ -1,38 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Overlay — Live</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Overlay</title>
+  <style>
+    body {
+      background: transparent;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    #tricker {
+      width: 100%;
+      padding: 8px;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    .upper {
+      display: flex;
+      justify-content: space-between;
+      width: 95%;
+      background: rgba(255,255,255,0.1);
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    .lower {
+      display: flex;
+      justify-content: space-between;
+      width: 95%;
+      padding: 6px 10px;
+    }
+    #teamBat {
+      font-weight: 700;
+      font-size: 18px;
+    }
+    #teamScore {
+      font-weight: 700;
+      font-size: 18px;
+      color: yellow;
+    }
+    #teamOver {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    .player {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .bowler {
+      font-size: 14px;
+      font-weight: 700;
+      color: #00ffff;
+    }
+    .recent {
+      font-size: 16px;
+      letter-spacing: 3px;
+    }
+  </style>
 </head>
-<body class="overlay-bg">
-  <div id="overlayBar" class="overlayBar" aria-hidden="false">
-    <div class="leftArea">
-      <div id="ov_leftName" class="ovName">PLAYER</div>
-      <div id="ov_leftStat" class="ovStat">0(0)</div>
+<body>
+  <div id="tricker">
+    <div class="upper">
+      <div>
+        <span id="teamBat">Team</span>
+        &nbsp;|&nbsp;
+        <span id="teamScore">0/0</span>
+        &nbsp;(<span id="teamOver">0.0 ov</span>)
+      </div>
     </div>
 
-    <div class="centerArea">
-      <div id="ov_team" class="ovTeam">TEAM</div>
-      <div id="ov_score" class="ovScore">0-0</div>
-      <div id="ov_overs" class="ovOvers">0.0</div>
-      <div id="ov_target" class="ovTarget hidden">Target: -</div>
+    <div class="lower">
+      <div>
+        🏏 <span class="player" id="bat1">Batsman1 0(0)</span> |
+        <span class="player" id="bat2">Batsman2 0(0)</span>
+      </div>
+      <div>
+        🥎 <span class="bowler" id="bowl">Bowler 0.0 0/0</span>
+      </div>
     </div>
 
-    <div class="rightArea">
-      <div id="ov_rightName" class="ovName">PLAYER</div>
-      <div id="ov_rightStat" class="ovStat">0(0)</div>
-    </div>
-
-    <div class="bottomArea">
-      <div id="ov_bowler" class="ovBowler">🥎 —</div>
-      <div id="ov_recent" class="ovRecent">- - - - - -</div>
+    <div style="margin-top:6px;">
+      <span class="recent" id="recent">• • • • •</span>
     </div>
   </div>
 
-  <div id="animBox" class="animBox hidden"></div>
+  <script>
+    const apiURL = "https://api.jsonbin.io/v3/b/69031647ae596e708f376e47";
 
-<script src="script.js"></script>
+    setInterval(() => {
+      fetch(apiURL + '?_=' + new Date().getTime(), { cache: "no-store" })
+        .then(res => res.json())
+        .then(data => {
+          const m = data.record.match;
+
+          document.getElementById('teamBat').textContent = m.batting;
+          document.getElementById('teamScore').textContent = `${m.score}/${m.wickets}`;
+          document.getElementById('teamOver').textContent = `${m.overs.toFixed(1)} ov`;
+
+          document.getElementById('bat1').textContent = `${m.striker.name} ${m.striker.runs}(${m.striker.balls})`;
+          document.getElementById('bat2').textContent = `${m.nonStriker.name} ${m.nonStriker.runs}(${m.nonStriker.balls})`;
+
+          document.getElementById('bowl').textContent = `${m.bowler.name} ${m.bowler.overs}.${m.bowler.balls} ${m.bowler.runs}/${m.bowler.wickets}`;
+          document.getElementById('recent').textContent = m.recentBalls.join(" ");
+        })
+        .catch(err => console.error("Overlay fetch error:", err));
+    }, 3000);
+  </script>
 </body>
 </html>
