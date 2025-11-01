@@ -1,33 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Overlay</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Overlay — Live</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body class="overlay-bg">
 
-  <div id="overlayTricker" class="overlay">
-    <div id="teamInfo" class="tricker">
-      <div id="battingTeamName">Team A</div>
-      <div id="scoreInfo">0/0 (0.0)</div>
-      <div id="batsmenInfo">
-        <span id="strikerInfo"></span> &nbsp;&nbsp;
-        <span id="nonStrikerInfo"></span>
-      </div>
-      <div id="targetInfo"></div>
+  <!-- overlay tricker (flat style like your image) -->
+  <div id="overlayBar" class="overlayBar" aria-hidden="false">
+    <div class="leftArea">
+      <div id="ov_leftName" class="ovName">PLAYER</div>
+      <div id="ov_leftStat" class="ovStat">0(0)</div>
     </div>
 
-    <div id="bowlerSection" class="bowlerSec">
-      <span id="bowlingTeamName">Team B</span>
-      <span id="bowlerName">🥎 </span>
-      <span id="recentBalls"></span>
+    <div class="centerArea">
+      <div id="ov_team" class="ovTeam">TEAM</div>
+      <div id="ov_score" class="ovScore">0-0</div>
+      <div id="ov_overs" class="ovOvers">0.0</div>
+      <div id="ov_target" class="ovTarget hidden">Target: -</div>
+    </div>
+
+    <div class="rightArea">
+      <div id="ov_rightName" class="ovName">PLAYER</div>
+      <div id="ov_rightStat" class="ovStat">0(0)</div>
+    </div>
+
+    <div class="bottomArea">
+      <div id="ov_bowler" class="ovBowler">🥎 —</div>
+      <div id="ov_recent" class="ovRecent">- - - - - -</div>
     </div>
   </div>
 
-  <div id="animationBox" class="animationBox"></div>
+  <div id="animBox" class="animBox hidden"></div>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
