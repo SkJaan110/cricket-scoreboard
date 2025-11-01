@@ -1,43 +1,25 @@
-/* common UI used by both pages */
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:transparent;color:#071042}
 .wrap{max-width:1100px;margin:10px auto;padding:12px}
-
-/* cards */
 .card{background:rgba(255,255,255,0.03);padding:12px;border-radius:12px;margin-bottom:12px}
 .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 input[type="text"], input[type="number"], select {padding:8px;border-radius:8px;border:0}
 input[type="color"]{width:46px;height:34px;border:0;padding:0}
-
-/* headings */
 h1{color:#ff3a8d;margin-bottom:8px}
-
-/* score area */
 .centerInfo{display:flex;flex-direction:column;align-items:center;gap:6px;margin:10px 0}
 .label{font-weight:700}
 .score{font-size:28px;font-weight:900}
 .overs{font-weight:800}
 .target{font-weight:800;color:#ffd24d}
-
-/* players */
 .playersRow{display:flex;justify-content:space-between;gap:12px;margin:10px 0}
 .playerBlock{flex:1;display:flex;flex-direction:column;align-items:flex-start}
-.playerName{font-weight:900;font-size:18px}
-.playerStat{font-weight:800;color:#ffd24d}
-
-/* bowler line */
+.playerName{font-weight:900;font-size:18px;padding:6px 10px;border-radius:8px}
+.playerStat{font-weight:800;color:#071042;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,0.85)}
 .bowlerLine{display:flex;justify-content:space-between;align-items:center;background:transparent;padding:8px;border-radius:8px}
-.bowlerLabel{font-weight:900}
-
-/* controls grid */
 .controlsGrid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
 .group{background:transparent;padding:6px;border-radius:8px}
 .btnRow button{padding:10px 14px;margin:6px;border-radius:8px;border:0;background:linear-gradient(90deg,#ff9bca,#ffd24d);color:#071042;font-weight:800;cursor:pointer}
-
-/* small group */
 .group.small .btnRow button{background:#9be3ff}
-
-/* toast */
 .toast{position:fixed;left:50%;top:8%;transform:translateX(-50%);background:#071042;color:#ffd24d;padding:10px 14px;border-radius:10px}
 .toast.hidden{display:none}
 
@@ -46,33 +28,20 @@ h1{color:#ff3a8d;margin-bottom:8px}
 .overlayBar{
   position:fixed;left:2%;right:2%;bottom:8px;
   height:92px;border-radius:36px;padding:10px 18px;display:flex;flex-direction:column;gap:8px;
-  background:transparent; /* we will set color backgrounds for parts only */
-  pointer-events:none; /* click-through on obs */
+  background:transparent; pointer-events:none;
 }
-
-/* top row */
 .leftArea, .centerArea, .rightArea{display:inline-block;vertical-align:middle}
 .leftArea{position:absolute;left:36px;top:14px;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 .rightArea{position:absolute;right:36px;top:14px;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .centerArea{margin:0 auto;text-align:center}
-
-/* batsman name & stat */
 .ovName{font-weight:900;font-size:18px;padding:6px 10px;border-radius:8px}
-.ovStat{font-weight:800;font-size:16px;padding:4px 8px;border-radius:6px;color:#071042;background:rgba(255,255,255,0.85)}
-
-/* team & score */
+.ovStat{font-weight:800;font-size:16px;padding:4px 8px;border-radius:6px}
 .ovTeam{display:inline-block;padding:6px 12px;border-radius:8px;font-weight:900}
 .ovScore{font-weight:900;font-size:20px;margin-top:4px}
 .ovOvers{font-size:14px;margin-top:2px;color:#071042}
-
-/* bottom area: bowler & recent */
 .bottomArea{position:absolute;left:50%;transform:translateX(-50%);bottom:6px;display:flex;gap:12px;align-items:center}
 .ovBowler{font-weight:900;padding:6px 10px;border-radius:8px}
 .ovRecent{font-weight:800;padding:6px 10px;border-radius:8px}
-
-/* anim box */
 .animBox{position:fixed;top:8%;left:50%;transform:translateX(-50%);font-size:46px;font-weight:900;color:#ffd24d;pointer-events:none}
 .animBox.hidden{display:none}
-
-/* helper classes */
 .hidden{display:none}
