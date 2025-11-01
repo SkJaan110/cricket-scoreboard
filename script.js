@@ -339,7 +339,26 @@ function showOverlayAnim(text){
 }
 
 /* start overlay polling only on overlay page (overlay.html) */
-if(typeof window !== 'undefined' && window.location.pathname.endsWith('overlay.html')){
-  setInterval(overlayFetchAndApply, 1400);
-  overlayFetchAndApply();
+if (typeof window !== 'undefined' && window.location.pathname.endsWith('overlay.html')) {
+  const apiURL = "https://api.jsonbin.io/v3/b/67016e47ae596e708f376e47"; // ← Yahan apna JSONBin URL daalo
+
+  setInterval(() => {
+    fetch(apiURL + '?_=' + new Date().getTime(), { cache: "no-store" })
+      .then(res => res.json())
+      .then(data => {
+        const m = data.record.match;
+        document.getElementById('teamBat').textContent = m.batting;
+        document.getElementById('teamScore').textContent = `${m.score}/${m.wickets}`;
+        document.getElementById('teamOver').textContent = `${m.overs.toFixed(1)} ov`;
+
+        document.getElementById('bat1').textContent = `${m.striker.name} ${m.striker.runs}(${m.striker.balls})`;
+        document.getElementById('bat2').textContent = `${m.nonStriker.name} ${m.nonStriker.runs}(${m.nonStriker.balls})`;
+
+        document.getElementById('bowl').textContent = `${m.bowler.name} ${m.bowler.overs}.${m.bowler.balls} ${m.bowler.runs}/${m.bowler.wickets}`;
+        document.getElementById('recent').textContent = m.recentBalls.join(" ");
+      })
+      .catch(err => console.error("Overlay fetch error:", err));
+  }, 3000);
+}
+
 }
