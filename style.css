@@ -22,26 +22,3 @@ h1{color:#ff3a8d;margin-bottom:8px}
 .group.small .btnRow button{background:#9be3ff}
 .toast{position:fixed;left:50%;top:8%;transform:translateX(-50%);background:#071042;color:#ffd24d;padding:10px 14px;border-radius:10px}
 .toast.hidden{display:none}
-
-/* ---------- OVERLAY styles ---------- */
-.overlay-bg{background:transparent}
-.overlayBar{
-  position:fixed;left:2%;right:2%;bottom:8px;
-  height:92px;border-radius:36px;padding:10px 18px;display:flex;flex-direction:column;gap:8px;
-  background:transparent; pointer-events:none;
-}
-.leftArea, .centerArea, .rightArea{display:inline-block;vertical-align:middle}
-.leftArea{position:absolute;left:36px;top:14px;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
-.rightArea{position:absolute;right:36px;top:14px;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
-.centerArea{margin:0 auto;text-align:center}
-.ovName{font-weight:900;font-size:18px;padding:6px 10px;border-radius:8px}
-.ovStat{font-weight:800;font-size:16px;padding:4px 8px;border-radius:6px}
-.ovTeam{display:inline-block;padding:6px 12px;border-radius:8px;font-weight:900}
-.ovScore{font-weight:900;font-size:20px;margin-top:4px}
-.ovOvers{font-size:14px;margin-top:2px;color:#071042}
-.bottomArea{position:absolute;left:50%;transform:translateX(-50%);bottom:6px;display:flex;gap:12px;align-items:center}
-.ovBowler{font-weight:900;padding:6px 10px;border-radius:8px}
-.ovRecent{font-weight:800;padding:6px 10px;border-radius:8px}
-.animBox{position:fixed;top:8%;left:50%;transform:translateX(-50%);font-size:46px;font-weight:900;color:#ffd24d;pointer-events:none}
-.animBox.hidden{display:none}
-.hidden{display:none}
