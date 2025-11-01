@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Cricket Scoring Panel — Final</title>
+<title>Cricket Scoring — Fixed</title>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="wrap">
-    <h1>🏏 Live Cricket Scoring</h1>
+    <h1>🏏 Live Cricket Scoring (Fixed)</h1>
 
     <section class="card">
       <h2>Match Setup</h2>
@@ -16,15 +16,12 @@
         <label>Team A name<br><input id="teamA" placeholder="Team A"></label>
         <label>Color<br><input id="teamAColor" type="color" value="#ff3a8d"></label>
       </div>
-
       <div class="row">
         <label>Team B name<br><input id="teamB" placeholder="Team B"></label>
         <label>Color<br><input id="teamBColor" type="color" value="#ffd24d"></label>
       </div>
-
       <div class="row">
         <label>Overs (1-100)<br><input id="oversLimit" type="number" min="1" max="100" value="10"></label>
-
         <div class="toss">
           <p>Toss winner & decision</p>
           <label><input type="radio" name="toss" value="A" checked> Team A</label>
@@ -35,21 +32,20 @@
           </select>
         </div>
       </div>
-
       <div class="row">
         <button id="btnCreate">Create Match</button>
       </div>
     </section>
 
     <section id="playersCard" class="card hidden">
-      <h2>Players & Start</h2>
+      <h2>Players — Set for Innings <span id="inningLabel">1</span></h2>
       <div class="row">
         <label>Striker<br><input id="inputStriker" placeholder="On-strike batsman"></label>
         <label>Non-Striker<br><input id="inputNonStriker" placeholder="Non-striker batsman"></label>
         <label>Bowler<br><input id="inputBowler" placeholder="Bowler name"></label>
       </div>
       <div class="row">
-        <button id="btnSetPlayers">Set Players & Start</button>
+        <button id="btnSetPlayers">Set Players & Start Innings</button>
       </div>
     </section>
 
@@ -77,7 +73,7 @@
 
       <div class="bowlerLine">
         <div id="bowlerLabel" class="bowlerLabel"></div>
-        <div id="recentBalls" class="recentBalls"></div>
+        <div id="recentBalls" class="recentBalls">- - - - - -</div>
       </div>
 
       <div class="controlsGrid">
