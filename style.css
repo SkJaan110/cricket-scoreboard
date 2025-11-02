@@ -1,47 +1,125 @@
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:transparent;color:#071042}
-.wrap{max-width:1100px;margin:10px auto;padding:12px}
-.card{background:rgba(255,255,255,0.03);padding:12px;border-radius:12px;margin-bottom:12px}
-.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-input[type="text"], input[type="number"], select {padding:8px;border-radius:8px;border:0}
-input[type="color"]{width:46px;height:34px;border:0;padding:0}
-h1{color:#ff3a8d;margin-bottom:8px}
-.centerInfo{display:flex;flex-direction:column;align-items:center;gap:6px;margin:10px 0}
-.label{font-weight:700}
-.score{font-size:28px;font-weight:900}
-.overs{font-weight:800}
-.target{font-weight:800;color:#ffd24d}
-.playersRow{display:flex;justify-content:space-between;gap:12px;margin:10px 0}
-.playerBlock{flex:1;display:flex;flex-direction:column;align-items:flex-start}
-.playerName{font-weight:900;font-size:18px;padding:6px 10px;border-radius:8px}
-.playerStat{font-weight:800;color:#071042;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,0.85)}
-.bowlerLine{display:flex;justify-content:space-between;align-items:center;background:transparent;padding:8px;border-radius:8px}
-.controlsGrid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
-.group{background:transparent;padding:6px;border-radius:8px}
-.btnRow button{padding:10px 14px;margin:6px;border-radius:8px;border:0;background:linear-gradient(90deg,#ff9bca,#ffd24d);color:#071042;font-weight:800;cursor:pointer}
-.group.small .btnRow button{background:#9be3ff}
-.toast{position:fixed;left:50%;top:8%;transform:translateX(-50%);background:#071042;color:#ffd24d;padding:10px 14px;border-radius:10px}
-.toast.hidden{display:none}
-
-/* ---------- OVERLAY styles ---------- */
-.overlay-bg{background:transparent}
-.overlayBar{
-  position:fixed;left:2%;right:2%;bottom:8px;
-  height:92px;border-radius:36px;padding:10px 18px;display:flex;flex-direction:column;gap:8px;
-  background:transparent; pointer-events:none;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Light grey background */
+    color: #333;
 }
-.leftArea, .centerArea, .rightArea{display:inline-block;vertical-align:middle}
-.leftArea{position:absolute;left:36px;top:14px;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
-.rightArea{position:absolute;right:36px;top:14px;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
-.centerArea{margin:0 auto;text-align:center}
-.ovName{font-weight:900;font-size:18px;padding:6px 10px;border-radius:8px}
-.ovStat{font-weight:800;font-size:16px;padding:4px 8px;border-radius:6px}
-.ovTeam{display:inline-block;padding:6px 12px;border-radius:8px;font-weight:900}
-.ovScore{font-weight:900;font-size:20px;margin-top:4px}
-.ovOvers{font-size:14px;margin-top:2px;color:#071042}
-.bottomArea{position:absolute;left:50%;transform:translateX(-50%);bottom:6px;display:flex;gap:12px;align-items:center}
-.ovBowler{font-weight:900;padding:6px 10px;border-radius:8px}
-.ovRecent{font-weight:800;padding:6px 10px;border-radius:8px}
-.animBox{position:fixed;top:8%;left:50%;transform:translateX(-50%);font-size:46px;font-weight:900;color:#ffd24d;pointer-events:none}
-.animBox.hidden{display:none}
-.hidden{display:none}
+
+header {
+    background-color: #008000; /* Cricket Green */
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+section {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+    color: #006400; /* Darker Green for section titles */
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+/* --- Match Summary Styles --- */
+
+.team-summary {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.team-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.team-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ccc;
+}
+
+#team1-score, #team2-score {
+    color: #cc0000; /* Red for emphasis on the score */
+    font-size: 1.5em;
+}
+
+#match-status {
+    text-align: center;
+    font-style: italic;
+    color: #666;
+    padding: 10px 0;
+}
+
+/* --- Scorecard Styles --- */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #e6ffe6; /* Lightest Green for table headers */
+    color: #333;
+    font-weight: bold;
+}
+
+/* --- Commentary Styles --- */
+
+#commentary-list {
+    list-style: none;
+    padding: 0;
+}
+
+#commentary-list li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+#commentary-list li:last-child {
+    border-bottom: none;
+}
+
+footer {
+    text-align: center;
+    padding: 15px 0;
+    background-color: #333;
+    color: white;
+    margin-top: 20px;
+}
