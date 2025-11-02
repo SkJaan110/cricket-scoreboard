@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Cricket Score</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Live Cricket Score</h1>
+        <!-- Add navigation or logo here -->
+    </header>
+
+    <main>
+        <!-- Live Match Summary Section -->
+        <section id="match-summary">
+            <h2>Match Summary</h2>
+            <div class="team-summary">
+                <div class="team-info">
+                    <img src="team1-logo.png" alt="Team 1 Logo">
+                    <span id="team1-name">Team 1</span>
+                    <span id="team1-score">0/0</span>
+                </div>
+                <div class="team-info">
+                    <img src="team2-logo.png" alt="Team 2 Logo">
+                    <span id="team2-name">Team 2</span>
+                    <span id="team2-score">0/0</span>
+                </div>
+            </div>
+            <p id="match-status">Loading...</p>
+        </section>
+
+        <!-- Scorecard Section -->
+        <section id="scorecard">
+            <h2>Scorecard</h2>
+            <!-- Team 1 Scorecard -->
+            <div class="scorecard-team" id="team1-scorecard">
+                <h3>Team 1</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Batsman</th>
+                            <th>R</th>
+                            <th>B</th>
+                            <th>4s</th>
+                            <th>6s</th>
+                            <th>SR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="team1-batsmen">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Team 2 Scorecard (will be toggled in JS) -->
+        </section>
+
+        <!-- Ball-by-Ball Commentary and Stats -->
+        <section id="ball-by-ball">
+            <h2>Ball-by-Ball Commentary</h2>
+            <ul id="commentary-list">
+                <!-- Commentary will be loaded here -->
+            </ul>
+            <div id="match-stats">
+                <!-- Match stats will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <!-- Footer content -->
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
