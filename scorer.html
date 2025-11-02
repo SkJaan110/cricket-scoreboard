@@ -57,6 +57,31 @@
             <button onclick="promptWicketDetails('LBW')">LBW</button>
         </div>
 
+        <div class="panel" id="setup-panel">
+            <h3>Match Setup 📋</h3>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <label>Team 1 Name (e.g., IND):</label><br>
+                    <input type="text" id="setup-t1" value="IND" style="width: 100%; margin-bottom: 5px;"><br>
+                    <label>Team 2 Name (e.g., AUS):</label><br>
+                    <input type="text" id="setup-t2" value="AUS" style="width: 100%; margin-bottom: 5px;"><br>
+                    <label>Overs Limit:</label><br>
+                    <input type="number" id="setup-overs" value="20" style="width: 100%;">
+                </div>
+                <div style="flex: 1;">
+                    <label>Striker Name:</label><br>
+                    <input type="text" id="setup-striker" value="Rohit" style="width: 100%; margin-bottom: 5px;"><br>
+                    <label>Non-Striker Name:</label><br>
+                    <input type="text" id="setup-nonstriker" value="Kohli" style="width: 100%; margin-bottom: 5px;"><br>
+                    <label>Starting Bowler:</label><br>
+                    <input type="text" id="setup-bowler" value="Starc" style="width: 100%;">
+                </div>
+            </div>
+            <label style="margin-top: 10px;">Toss Details:</label><br>
+            <input type="text" id="setup-toss" value="IND won toss, opted to bat" style="width: 100%; margin-top: 5px;">
+            <button onclick="startNewMatchSetup()" style="margin-top: 15px; background-color: #008000; color: white;">🚀 START MATCH</button>
+            <hr>
+        </div>
         <div class="panel action-buttons">
             <h3>Match Control</h3>
             <button onclick="undoLastBall()">↩️ UNDO LAST BALL</button>
