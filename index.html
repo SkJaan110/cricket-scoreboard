@@ -3,75 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Cricket Score</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Live Custom Cricket Overlay</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <header>
-        <h1>Live Cricket Score</h1>
-        <!-- Add navigation or logo here -->
-    </header>
 
-    <main>
-        <!-- Live Match Summary Section -->
-        <section id="match-summary">
-            <h2>Match Summary</h2>
-            <div class="team-summary">
-                <div class="team-info">
-                    <img src="team1-logo.png" alt="Team 1 Logo">
-                    <span id="team1-name">Team 1</span>
-                    <span id="team1-score">0/0</span>
+    <div id="main-score-bar" class="overlay-container">
+        
+        <div class="team-section team-left">
+            <span id="team1-abbr" class="team-name">--</span>
+            <div class="batsman-info">
+                <span id="batsman1-name">STRIKER</span>
+                <span id="batsman2-name" class="non-striker">NON-STRIKER</span>
+            </div>
+            <span id="batsman1-runs">0(0)</span>
+            <span id="batsman2-runs" class="non-striker">0(0)</span>
+        </div>
+
+        <div class="center-bar">
+            <span id="score-runs-wickets" class="score-main">0-0</span>
+            <span id="overs" class="overs-main">0.0</span>
+            <span id="target-status" class="status-text">TOSS DETAILS / TARGET</span>
+        </div>
+
+        <div class="team-section team-right">
+            <span id="team2-abbr" class="team-name">--</span>
+            <span id="bowler-name">BOWLER NAME</span>
+            <span id="bowler-figure">0-0-0</span>
+            
+            <div id="ball-tracker" class="ball-tracker">
                 </div>
-                <div class="team-info">
-                    <img src="team2-logo.png" alt="Team 2 Logo">
-                    <span id="team2-name">Team 2</span>
-                    <span id="team2-score">0/0</span>
-                </div>
-            </div>
-            <p id="match-status">Loading...</p>
-        </section>
+        </div>
+    </div>
 
-        <!-- Scorecard Section -->
-        <section id="scorecard">
-            <h2>Scorecard</h2>
-            <!-- Team 1 Scorecard -->
-            <div class="scorecard-team" id="team1-scorecard">
-                <h3>Team 1</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Batsman</th>
-                            <th>R</th>
-                            <th>B</th>
-                            <th>4s</th>
-                            <th>6s</th>
-                            <th>SR</th>
-                        </tr>
-                    </thead>
-                    <tbody id="team1-batsmen">
-                        <!-- Data will be loaded here -->
-                    </tbody>
-                </table>
-            </div>
-            <!-- Team 2 Scorecard (will be toggled in JS) -->
-        </section>
+    <div id="action-popup" class="action-popup">
+        <span id="popup-text">FOUR</span>
+    </div>
 
-        <!-- Ball-by-Ball Commentary and Stats -->
-        <section id="ball-by-ball">
-            <h2>Ball-by-Ball Commentary</h2>
-            <ul id="commentary-list">
-                <!-- Commentary will be loaded here -->
-            </ul>
-            <div id="match-stats">
-                <!-- Match stats will be loaded here -->
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <!-- Footer content -->
-    </footer>
-
-    <script src="script.js"></script>
+    <script src="public_script.js"></script> 
 </body>
 </html>
