@@ -1,125 +1,129 @@
+/* =================================================================
+   BASE STYLES: TRANSPARENCY AND FONT
+   ================================================================= */
 body {
-    font-family: Arial, sans-serif;
+    background-color: transparent !important; /* CRITICAL: For OBS/Streamlabs transparency */
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4; /* Light grey background */
-    color: #333;
-}
-
-header {
-    background-color: #008000; /* Cricket Green */
+    font-family: 'Roboto', sans-serif;
     color: white;
-    padding: 20px 0;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden; 
 }
 
-h1 {
-    margin: 0;
-    font-size: 2em;
-}
-
-main {
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 0 20px;
-}
-
-section {
-    background-color: white;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-h2 {
-    color: #006400; /* Darker Green for section titles */
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 10px;
-    margin-top: 0;
-}
-
-/* --- Match Summary Styles --- */
-
-.team-summary {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 15px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-.team-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-.team-info img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid #ccc;
-}
-
-#team1-score, #team2-score {
-    color: #cc0000; /* Red for emphasis on the score */
-    font-size: 1.5em;
-}
-
-#match-status {
-    text-align: center;
-    font-style: italic;
-    color: #666;
-    padding: 10px 0;
-}
-
-/* --- Scorecard Styles --- */
-
-table {
+/* =================================================================
+   1. MAIN SCORE BAR STYLES (Video Look - Fixed Bottom)
+   ================================================================= */
+#main-score-bar {
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
+    height: 65px; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-sizing: border-box;
+    z-index: 1000;
+    
+    /* V-CUT SHAPE (Simplified using a slight skew effect or solid background) */
+    background: linear-gradient(to right, #4b0082, #8a2be2); /* Purple/Indigo gradient */
+    border-top: 3px solid #ff1493; /* Pink accent from the video */
+    
+    /* Optionally use transform:skewY() for a V-cut look, but that complicates alignment */
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
+.team-section {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    padding: 0 10px;
+    height: 100%;
 }
 
-th {
-    background-color: #e6ffe6; /* Lightest Green for table headers */
-    color: #333;
+.team-name {
     font-weight: bold;
+    font-size: 1.1em;
+    margin-right: 15px;
+    color: #ffd700; /* Gold color */
 }
 
-/* --- Commentary Styles --- */
-
-#commentary-list {
-    list-style: none;
-    padding: 0;
+.batsman-info, #bowler-name {
+    font-weight: bold;
+    margin-right: 10px;
 }
 
-#commentary-list li {
-    padding: 8px 0;
-    border-bottom: 1px dashed #eee;
+.non-striker {
+    opacity: 0.7; /* Faded for non-striker/less important data */
 }
 
-#commentary-list li:last-child {
-    border-bottom: none;
+/* --- Center Section --- */
+.center-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    background-color: #333333; /* Dark background for score visibility */
+    height: 100%;
+    min-width: 150px; /* Ensure score has enough space */
 }
 
-footer {
-    text-align: center;
-    padding: 15px 0;
-    background-color: #333;
+.score-main {
+    font-size: 1.8em;
+    font-weight: 900;
+    color: #ff4500; /* Orange/Red for score emphasis */
+}
+
+.overs-main, .status-text {
+    font-size: 0.8em;
+    margin-top: -5px;
+}
+
+/* --- Ball Tracker --- */
+.ball-tracker {
+    display: flex;
+    gap: 3px;
+    margin-left: 15px;
+}
+.ball-result {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #008000; /* Dot ball default */
     color: white;
-    margin-top: 20px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+/* =================================================================
+   2. POP-UP ANIMATION STYLES
+   ================================================================= */
+
+.action-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bounce effect for IN/OUT */
+    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 20px 40px;
+    border-radius: 10px;
+    border: 5px solid #ff1493; /* Pink Border */
+}
+
+.action-popup.is-active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#popup-text {
+    font-size: 4em;
+    font-weight: 900;
+    color: #ffd700;
 }
