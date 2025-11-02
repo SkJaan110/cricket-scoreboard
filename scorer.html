@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Scorer Panel (Admin)</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h1 { color: #006400; text-align: center; }
+        button { padding: 10px 20px; margin: 5px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; }
+        .run-buttons button { background-color: #007bff; color: white; }
+        .extra-buttons button { background-color: #ffc107; color: #333; }
+        .wicket-buttons button { background-color: #dc3545; color: white; }
+        .action-buttons button { background-color: #6c757d; color: white; }
+        .panel { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        #message-area { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🏏 LIVE MATCH SCORER PANEL</h1>
+        <p style="text-align: center; color: red;">**IMPORTANT: ENSURE YOUR JSON BIN MASTER KEY IS SET IN `scorer_script.js`**</p>
+        
+        <div class="panel" id="current-status">
+            <h3>Current State: <span id="display-innings">1st Innings</span></h3>
+            <p>Score: <span id="display-score">0/0</span> | Overs: <span id="display-overs">0.0</span></p>
+            <p>On Crease: <span id="display-batsman"></span> (<span id="display-striker-runs">0</span>) | Bowler: <span id="display-bowler"></span></p>
+            <p id="message-area">Ready to score...</p>
+        </div>
+
+        <div class="panel run-buttons">
+            <h3>Runs</h3>
+            <button onclick="recordBall(0)">Dot (0)</button>
+            <button onclick="recordBall(1)">1 Run</button>
+            <button onclick="recordBall(2)">2 Runs</button>
+            <button onclick="recordBall(3)">3 Runs</button>
+            <button onclick="recordBall(4)">FOUR (4)</button>
+            <button onclick="recordBall(6)">SIX (6)</button>
+        </div>
+
+        <div class="panel extra-buttons">
+            <h3>Extras</h3>
+            <button onclick="recordExtra('Wd')">Wide</button>
+            <button onclick="recordExtra('Nb')">No Ball</button>
+            <button onclick="recordExtra('LB', 1)">LB +1</button>
+            <button onclick="recordExtra('B', 1)">Bye +1</button>
+        </div>
+        
+        <div class="panel wicket-buttons">
+            <h3>Wickets</h3>
+            <button onclick="promptWicketDetails('Caught')">Caught</button>
+            <button onclick="promptWicketDetails('Bowled')">Bowled</button>
+            <button onclick="promptWicketDetails('Run Out')">Run Out</button>
+            <button onclick="promptWicketDetails('Stumped')">Stumped</button>
+            <button onclick="promptWicketDetails('LBW')">LBW</button>
+        </div>
+
+        <div class="panel action-buttons">
+            <h3>Match Control</h3>
+            <button onclick="undoLastBall()">↩️ UNDO LAST BALL</button>
+            <button onclick="startNewMatchSetup()">🔄 Setup New Match</button>
+        </div>
+    </div>
+
+    <script src="scorer_script.js"></script> 
+</body>
+</html>
