@@ -40,26 +40,34 @@ async function loadDataFromJSONBin() {
     }
 }
 
-// Function to handle match setup (Simplified - In reality, this requires a large form)
+// scorer_script.js mein is function ko replace karen:
+
 function startNewMatchSetup() {
-    const t1 = prompt("Enter Team 1 Abbreviation (e.g., IND):");
-    const t2 = prompt("Enter Team 2 Abbreviation (e.g., AUS):");
-    const toss = prompt("Toss details (e.g., IND opted to bat):");
-    const striker = prompt("Enter Striker Name:");
-    const nonStriker = prompt("Enter Non-Striker Name:");
-    const bowler = prompt("Enter Starting Bowler Name:");
+    // Form se data lena
+    const t1 = document.getElementById('setup-t1').value;
+    const t2 = document.getElementById('setup-t2').value;
+    const overs = parseInt(document.getElementById('setup-overs').value);
+    const toss = document.getElementById('setup-toss').value;
+    const striker = document.getElementById('setup-striker').value;
+    const nonStriker = document.getElementById('setup-nonstriker').value;
+    const bowler = document.getElementById('setup-bowler').value;
+
+    if (!t1 || !t2 || !striker || !bowler) {
+        alert("Please fill in all team and player names.");
+        return;
+    }
 
     // Initialize full complex structure
     matchData = {
-        metadata: { team1_abbr: t1, team2_abbr: t2, toss_details: toss, overs_limit: 20, players: {} },
+        metadata: { team1_abbr: t1, team2_abbr: t2, toss_details: toss, overs_limit: overs, players: {} },
         innings: 1,
         target: 0,
         current_team: 'team1', 
-        team1: { score: 0, wickets: 0, overs: 0.0, current_striker: striker, current_nonstriker: nonStriker },
-        team2: { score: 0, wickets: 0, overs: 0.0 },
+        team1: { score: 0, wickets: 0, overs: 0.0, abbr: t1 },
+        team2: { score: 0, wickets: 0, overs: 0.0, abbr: t2 },
         current_bowler: { name: bowler, wickets: 0, runs: 0, overs: 0.0 },
         current_batters: { striker: { name: striker, runs: 0, balls: 0 }, non_striker: { name: nonStriker, runs: 0, balls: 0 } },
-        ball_history: [], // For UNDO
+        ball_history: [], 
         commentary_list: []
     };
     
@@ -69,9 +77,9 @@ function startNewMatchSetup() {
     
     updateDisplay();
     pushToJSONBin();
-    document.getElementById('message-area').textContent = "New Match Setup Complete. Start Scoring!";
+    document.getElementById('message-area').textContent = `Match started! ${t1} batting first.`;
+    document.getElementById('setup-panel').style.display = 'none'; // Setup panel chupa do
 }
-
 
 // -----------------------------------------------------------------
 // 2. SCORING CORE LOGIC (Complex!)
