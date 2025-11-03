@@ -1,129 +1,104 @@
 /* =================================================================
-   BASE STYLES: TRANSPARENCY AND FONT
+   BASE STYLES: TRANSPARENCY AND BOLDNESS
    ================================================================= */
 body {
-    background-color: transparent !important; /* CRITICAL: For OBS/Streamlabs transparency */
+    background-color: transparent !important; 
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
     color: white;
     overflow: hidden; 
 }
+#main-score-bar span {
+    font-weight: 800; /* Ensure all score text is bold */
+}
+
+/* [BOTTOM BAR STYLES remain the same from previous answers] */
 
 /* =================================================================
-   1. MAIN SCORE BAR STYLES (Video Look - Fixed Bottom)
-   ================================================================= */
-#main-score-bar {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 65px; 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    box-sizing: border-box;
-    z-index: 1000;
-    
-    /* V-CUT SHAPE (Simplified using a slight skew effect or solid background) */
-    background: linear-gradient(to right, #4b0082, #8a2be2); /* Purple/Indigo gradient */
-    border-top: 3px solid #ff1493; /* Pink accent from the video */
-    
-    /* Optionally use transform:skewY() for a V-cut look, but that complicates alignment */
-}
-
-.team-section {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    padding: 0 10px;
-    height: 100%;
-}
-
-.team-name {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-right: 15px;
-    color: #ffd700; /* Gold color */
-}
-
-.batsman-info, #bowler-name {
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-.non-striker {
-    opacity: 0.7; /* Faded for non-striker/less important data */
-}
-
-/* --- Center Section --- */
-.center-bar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0 15px;
-    background-color: #333333; /* Dark background for score visibility */
-    height: 100%;
-    min-width: 150px; /* Ensure score has enough space */
-}
-
-.score-main {
-    font-size: 1.8em;
-    font-weight: 900;
-    color: #ff4500; /* Orange/Red for score emphasis */
-}
-
-.overs-main, .status-text {
-    font-size: 0.8em;
-    margin-top: -5px;
-}
-
-/* --- Ball Tracker --- */
-.ball-tracker {
-    display: flex;
-    gap: 3px;
-    margin-left: 15px;
-}
-.ball-result {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: #008000; /* Dot ball default */
-    color: white;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    transition: background-color 0.2s;
-}
-
-/* =================================================================
-   2. POP-UP ANIMATION STYLES
+   2. POP-UP ANIMATION STYLES (SIX/FOUR/WICKET/FREE HIT)
    ================================================================= */
 
-.action-popup {
+.popup-box {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
     opacity: 0;
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bounce effect for IN/OUT */
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
     z-index: 2000;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(138, 43, 226, 0.9); /* Colourful Background */
     padding: 20px 40px;
     border-radius: 10px;
-    border: 5px solid #ff1493; /* Pink Border */
+    border: 5px solid #ff1493; 
+    box-shadow: 0 0 20px rgba(255, 0, 100, 0.8);
 }
 
-.action-popup.is-active {
+.popup-box.is-active {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
 }
 
 #popup-text {
-    font-size: 4em;
+    font-size: 5em;
     font-weight: 900;
+    color: #ffd700;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+/* =================================================================
+   3. DETAIL POP-UP STYLES (MATCH DETAILS/SQUADS/SCORECARD)
+   ================================================================= */
+
+.detail-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-height: 90%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 1500;
+    padding: 30px;
+    border-radius: 15px;
+    background: linear-gradient(145deg, rgba(20, 0, 60, 0.95), rgba(80, 0, 150, 0.95)); /* Deep Colourful Background */
+    border: 5px solid #ff1493;
+    overflow-y: auto; /* Scrollable for SQUADS/SCORECARD */
+}
+
+.detail-box.is-active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.detail-content h3 {
+    text-align: center;
+    color: #ffd700;
+    font-size: 2em;
+    font-weight: 900;
+    margin-bottom: 20px;
+}
+.detail-content p, .detail-content li {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    line-height: 1.6;
+}
+.detail-content table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+.detail-content th, .detail-content td {
+    padding: 10px;
+    border: 1px solid #ff1493;
+    text-align: left;
+    font-weight: bold;
+}
+.detail-content th {
+    background-color: rgba(255, 20, 147, 0.2);
     color: #ffd700;
 }
