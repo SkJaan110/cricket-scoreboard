@@ -9,7 +9,6 @@
 <body>
 
     <div id="main-score-bar" class="overlay-container">
-        
         <div class="team-section team-left">
             <span id="team1-abbr" class="team-name">--</span>
             <div class="batsman-info">
@@ -19,25 +18,26 @@
             <span id="batsman1-runs">0(0)</span>
             <span id="batsman2-runs" class="non-striker">0(0)</span>
         </div>
-
         <div class="center-bar">
             <span id="score-runs-wickets" class="score-main">0-0</span>
             <span id="overs" class="overs-main">0.0</span>
             <span id="target-status" class="status-text">TOSS DETAILS / TARGET</span>
         </div>
-
         <div class="team-section team-right">
             <span id="team2-abbr" class="team-name">--</span>
             <span id="bowler-name">BOWLER NAME</span>
             <span id="bowler-figure">0-0-0</span>
-            
-            <div id="ball-tracker" class="ball-tracker">
-                </div>
+            <div id="ball-tracker" class="ball-tracker"></div>
         </div>
     </div>
 
-    <div id="action-popup" class="action-popup">
-        <span id="popup-text">FOUR</span>
+    <div id="action-popup" class="popup-box">
+        <span id="popup-text">SIX</span>
+    </div>
+
+    <div id="detail-popup" class="detail-box">
+        <div id="detail-content" class="detail-content">
+            </div>
     </div>
 
     <script src="public_script.js"></script> 
