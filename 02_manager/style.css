@@ -1,0 +1,83 @@
+/* =================================================================
+   style.css (Manager Login Design)
+   ================================================================= */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #212133; /* Dark background from home page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: white;
+}
+
+.login-container {
+    background-color: #3f005c; /* Dark Purple container */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+}
+
+h1 {
+    color: #FF1493; /* Bright Pink heading */
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50; /* Green button for action */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.error-message {
+    color: #ffd700; /* Gold/Yellow for warnings */
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.back-link {
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+.back-link a {
+    color: #aaa;
+    text-decoration: none;
+}
