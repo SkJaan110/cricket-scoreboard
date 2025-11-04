@@ -1,0 +1,98 @@
+/* =================================================================
+   02_manager/admin_style.css (Admin Dashboard Design)
+   ================================================================= */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9; 
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+.dashboard-header {
+    background-color: #4B0082; /* Deep Purple */
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+#logout-button {
+    background-color: #FF1493; /* Bright Pink for Logout */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Main Container */
+.dashboard-container {
+    padding: 20px;
+    display: grid;
+    gap: 20px;
+}
+
+/* Module Cards */
+.module-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-top: 5px solid #007bff;
+}
+.primary-module {
+    border-top: 5px solid #4CAF50; /* Green for primary module */
+}
+.module-card h2 {
+    color: #4B0082;
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Links inside cards */
+.module-link, .setup-item {
+    display: block;
+    text-decoration: none;
+    color: #333;
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.module-link:hover, .setup-item:hover {
+    background-color: #e9e9e9;
+}
+.module-link {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+.module-link img {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+}
+
+.setup-links a {
+    background-color: #f0f0ff;
+    color: #007bff;
+    border: 1px solid #c9c9ff;
+    text-align: center;
+}
+.setup-links a:hover {
+    background-color: #e0e0ff;
+}
+.note {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 10px;
+}
