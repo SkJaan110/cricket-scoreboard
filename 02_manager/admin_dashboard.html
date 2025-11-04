@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+<body>
+
+    <div class="dashboard-header">
+        <h1>📊 Admin Control Panel</h1>
+        <p id="welcome-message">Welcome, Admin!</p>
+        <button id="logout-button" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="module-card primary-module">
+            <h2>Cricket Scoring & Matches</h2>
+            <a href="match_manager.html" class="module-link">
+                <img src="../images/create.png" alt="Create Match">
+                <p>CREATE/MANAGE MATCHES</p>
+            </a>
+            <a href="scorer_select.html" class="module-link">
+                <img src="../images/scoring.png" alt="Scoring">
+                <p>OPEN LIVE SCORING PANEL</p>
+            </a>
+        </div>
+
+        <div class="module-card">
+            <h2>League & Data Setup</h2>
+            <div class="setup-links">
+                <a href="../03_match_creator/teams.html" class="setup-item">TEAMS MANAGEMENT</a>
+                <a href="../03_match_creator/players.html" class="setup-item">PLAYERS LIST</a>
+                <a href="../03_match_creator/leagues.html" class="setup-item">LEAGUE SETUP</a>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <h2>System Users</h2>
+            <div class="setup-links">
+                <a href="user_management.html" class="setup-item">ADD/REMOVE SCORERS</a>
+                <p class="note">Manage access for other Scorers.</p>
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="admin_script.js"></script>
+</body>
+</html>
