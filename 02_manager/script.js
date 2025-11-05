@@ -1,62 +1,33 @@
 // =================================================================
-// script.js (Login Logic for 02_manager)
+// 02_manager/script.js (TEMPORARY OFFLINE LOGIN LOGIC)
 // =================================================================
 
-// ⚠️ IMPORTANT: Yeh Master Bin wohi hoga jo Admin aur Scorers ke credentials store karega
-const CREDENTIALS_BIN_ID = '69031647ae596e708f376e47'; // Assuming this is your Master Bin
-const CREDENTIALS_READ_URL = `https://api.jsonbin.io/v3/b/${CREDENTIALS_BIN_ID}/latest`;
-const ADMIN_MASTER_KEY = '$2a$10$4JIQrBJ4q26ri7NRJ3j6tOht7D57KvQBLG/lT6646UHfjBKltayfe';
+// ⚠️ JSONBin Master Details ko filhal ignore kar rahe hain, sirf login check ke liye.
+// const CREDENTIALS_BIN_ID = '...'; 
+// const ADMIN_MASTER_KEY = '...'; 
 
-let userCredentials = {};
+let userCredentials = [
+    // Default credentials for offline testing (MD5 Hash)
+    { username: 'admin', hash: 'e10adc3949ba59abbe56e057f20f883e', role: 'admin' }, // 123456
+    { username: 'scorer', hash: '5f4dcc3b5aa765d61d8327deb882cf99', role: 'scorer' } // password
+];
 
-document.addEventListener('DOMContentLoaded', loadCredentials);
+document.addEventListener('DOMContentLoaded', () => {
+    // Console mein message daal do taaki pata chale ki script load ho gayi hai
+    console.log("Login Script Loaded (Offline Mode)."); 
+    document.getElementById('message').textContent = 'Ready to Login (Offline Test Mode).';
+    document.getElementById('message').style.color = '#fff';
+});
 
-async function loadCredentials() {
-    // Load Admin/Scorer credentials from JSONBin
-    try {
-        const response = await fetch(CREDENTIALS_READ_URL);
-        const json_response = await response.json();
-        
-        if (json_response.record && json_response.record.users) {
-            userCredentials = json_response.record.users;
-            document.getElementById('message').textContent = 'Ready to Login.';
-            document.getElementById('message').classList.remove('error-message');
-            document.getElementById('message').style.color = 'lightgreen';
-        } else {
-            // Initializing credentials if the Bin is empty (for the first time)
-            await initializeCredentials();
-        }
-    } catch (e) {
-        document.getElementById('message').textContent = 'CRITICAL ERROR: Failed to load credentials.';
-    }
-}
-
-async function initializeCredentials() {
-    const initialUsers = {
-        // NOTE: Passwords are pre-hashed (MD5 used here for simplicity)
-        users: [
-            { username: 'admin', hash: 'e10adc3949ba59abbe56e057f20f883e', role: 'admin' }, // 123456
-            { username: 'scorer', hash: '5f4dcc3b5aa765d61d8327deb882cf99', role: 'scorer' } // password
-        ]
-    };
-
-    // Store this initial data back into the Master Bin
-    await fetch(CREDENTIALS_READ_URL, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': ADMIN_MASTER_KEY,
-            'X-Bin-Versioning': 'false'
-        },
-        body: JSON.stringify(initialUsers)
-    });
-    userCredentials = initialUsers.users;
-    document.getElementById('message').textContent = 'Default credentials loaded (admin/123456 & scorer/password).';
-    document.getElementById('message').style.color = 'lightgreen';
-}
-
+// loadCredentials aur initializeCredentials functions ko hatana hoga
 
 function attemptLogin() {
+    // Dhyan dein: CryptoJS library HTML mein load honi chahiye.
+    if (typeof CryptoJS === 'undefined') {
+        alert("CRITICAL: Hashing library (CryptoJS) is not loaded. Check internet connection.");
+        return;
+    }
+    
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
     const messageDisplay = document.getElementById('message');
@@ -66,7 +37,7 @@ function attemptLogin() {
         return;
     }
 
-    // 1. Client-Side Hashing (CryptoJS is loaded via script tag in HTML)
+    // 1. Client-Side Hashing
     const inputHash = CryptoJS.MD5(password).toString();
 
     // 2. Verification
@@ -78,17 +49,19 @@ function attemptLogin() {
         messageDisplay.textContent = `Login Successful! Redirecting to ${foundUser.role} panel.`;
         messageDisplay.style.color = 'lightgreen';
         
-        // 3. Store Role in localStorage for persistence (Crucial step)
+        // 3. Store Role in localStorage 
         localStorage.setItem('currentUserRole', foundUser.role);
         
-        // 4. Redirection to the respective Control Panel
+        // 4. Redirection (Paths checked: same folder)
         if (foundUser.role === 'admin') {
-            window.location.href = 'admin_dashboard.html'; // Admin goes to the full dashboard
+            window.location.href = 'admin_dashboard.html'; 
         } else {
-            window.location.href = 'scorer_select.html'; // Scorer goes directly to match selection
+            window.location.href = 'scorer_select.html'; 
         }
     } else {
         messageDisplay.textContent = 'Invalid Username or Password.';
         messageDisplay.style.color = '#ffd700';
     }
 }
+
+// ⚠️ Ensure admin_dashboard.html and admin_style.css are in the 02_manager folder.
