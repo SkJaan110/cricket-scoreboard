@@ -19,14 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('message').style.color = '#fff';
 });
 
-// loadCredentials aur initializeCredentials functions ko hatana hoga
-
-function attemptLogin() {
-    // Dhyan dein: CryptoJS library HTML mein load honi chahiye.
-    if (typeof CryptoJS === 'undefined') {
-        alert("CRITICAL: Hashing library (CryptoJS) is not loaded. Check internet connection.");
-        return;
-    }
     
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
